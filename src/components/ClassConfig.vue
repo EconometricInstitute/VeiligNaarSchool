@@ -2,8 +2,8 @@
   <v-card>
     <v-container>
       <v-row>
-        <v-col cols="3" v-for="(type, idx) of group_types" :key="type">
-          <v-text-field :label="type" v-model="group_count[idx]" type="number" min="0" />
+        <v-col cols="3" v-for="(type, idx) of groupTypes" :key="type.short">
+          <v-text-field :label="type.full" :value="groupCount[idx]" @change="val => setCount(idx, val)" type="number" min="0" />
         </v-col>
       </v-row>
     </v-container>
@@ -14,20 +14,24 @@
 </template>
 
 <script>
-  const PREFIX = 'Groep' ;
-  const NUMBER_OF_YEARS = 8;
-  const GROUP_TYPES = [...Array(NUMBER_OF_YEARS).keys()].map(i => PREFIX + (i+1));
+  import { mapGetters, mapState } from 'vuex';
 
   export default {
     name: 'ClassConfig',
     methods: {
       next() {
         this.$emit('next');
+      },
+      setCount(idx, val) {
+        console.log(idx, val);
+        this.$store.commit('setGroupCount', {year: idx, value: val})
       }
     },
     data: () => ({
-      group_types: [...GROUP_TYPES],
-      group_count: GROUP_TYPES.map(() => 1)
     }),
+    computed: {
+      ...mapState(['groupCount']),
+      ...mapGetters(['groupTypes'])
+    }
   }
 </script>

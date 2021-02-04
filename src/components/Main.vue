@@ -1,21 +1,21 @@
 <template>
   <v-container fluid>
-    <v-stepper v-model="step" vertical>
-      <v-stepper-step :complete="step > 1" step="1">Aantal Klassen</v-stepper-step>
+    <v-stepper v-model="step" vertical non-linear>
+      <v-stepper-step editable :complete="step > 1" step="1">Invoeren Klassen</v-stepper-step>
       <v-stepper-content step="1">
         <ClassConfig @next="step++" />
       </v-stepper-content>
-      <v-stepper-step :complete="step > 2" step="2">Gemeenschappelijke Ouders</v-stepper-step>
+      <v-stepper-step editable :complete="step > 2" step="2">Invoeren Overlap</v-stepper-step>
       <v-stepper-content step="2">
-        <v-card>Step 2</v-card>
+        <Overlap @next="step++" />
       </v-stepper-content>
-      <v-stepper-step :complete="step > 3" step="3">Berekenen Oplossing</v-stepper-step>
+      <v-stepper-step editable :complete="step > 3" step="3">Berekenen Verdeling</v-stepper-step>
       <v-stepper-content step="3">
-        <v-card>Step 3</v-card>
+        <SolverConfig @next="step++" />
       </v-stepper-content>
-      <v-stepper-step step="4">Bekijken Oplossing</v-stepper-step>
+      <v-stepper-step step="4">Bekijk Verdeling</v-stepper-step>
       <v-stepper-content step="4">
-        <v-card>Step 4</v-card>
+        <SolutionTable />
       </v-stepper-content>
     </v-stepper>
   </v-container>
@@ -23,11 +23,17 @@
 
 <script>
   import ClassConfig from './ClassConfig';
+  import Overlap from './Overlap';
+  import SolverConfig from './SolverConfig';
+  import SolutionTable from './SolutionTable';
 
   export default {
     name: 'Main',
     components: {
-      ClassConfig
+      ClassConfig,
+      Overlap,
+      SolverConfig,
+      SolutionTable
     },
     data: () => ({
       step: 1
