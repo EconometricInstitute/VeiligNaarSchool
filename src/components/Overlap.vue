@@ -4,17 +4,17 @@
       <thead>
         <tr>
           <th>{{PREFIX}}</th>
-          <template v-for="(g,idx) of groups">
-            <th v-if="idx < groups.length-1" :key="g.short">{{g.short}}</th>
+          <template v-for="g of groups">
+            <th :key="g.short">{{g.short}}</th>
           </template>
         </tr>
       </thead>
       <tbody>
         <template v-for="(g,row) in groups">
-          <tr :key="'r'+g.short" v-if="row > 0">
+          <tr :key="'r'+g.short" >
             <th scope="row">{{g.short}}</th>
             <td v-for="(c,col) in groups" :key="g.short+'-'+c.short">
-              <v-text-field type="number" v-if="g.short > c.short" min="0"
+              <v-text-field type="number" v-if="col != row" min="0"
                 :value="matrix[row][col]" @input="val => setOverlap(row, col, val)" />
             </td>
           </tr>
@@ -30,7 +30,7 @@
 
 <script>
   import { PREFIX } from '../parameters'
-  import { mapGetters, mapState } from 'vuex';
+  import { mapState } from 'vuex';
 
   export default {
     name: 'Overlap',
@@ -53,8 +53,7 @@
       PREFIX: PREFIX.trim()
     }),
     computed: {
-      ...mapState(['matrix']),
-      ...mapGetters(['groups'])
+      ...mapState(['matrix', 'groups']),
     }
   }
 </script>

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import {PREFIX, GROUP_TYPES} from '../parameters';
+import {GROUP_TYPES} from '../parameters';
 
 function initMatrix(groupCount) {
   const matrix = [];
@@ -23,22 +23,22 @@ function computeMax(groups, div) {
 
 export default new Vuex.Store({
   state: {
-    groupCount: [...GROUP_TYPES.map(() => 1)],
-    numGroups: GROUP_TYPES.length,
-    matrix: initMatrix(GROUP_TYPES.length),
+    groups: [],
+    numGroups: 0,
+    matrix: initMatrix(0),
     timeslots: 2,
-    maxPerGroup: computeMax(GROUP_TYPES.length, 2),
+    maxPerGroup: computeMax(0, 2),
     maxFocus: true,
     solution: null
   },
   mutations: {
-    setGroupCount(state, payload) {
-      const count = parseInt(payload.value);
-      Vue.set(state.groupCount, payload.year, count);
-      state.numGroups = state.groupCount.reduce((a,b) => a+b, 0);
-      state.matrix = initMatrix(state.groupCount);
-      state.maxPerGroup = computeMax(state.numGroups, state.timeslots);
-      console.log(state.matrix);
+    setGroups(state, payload) {
+      state.groups = [...payload];
+      state.numGroups = payload.length;
+      state.maxPerGroup = computeMax(payload.length, state.timeslots);
+      // TODO: it could be nicer to trim/extend the current matrix...?
+      state.matrix = initMatrix(payload.length);
+      console.log(state);
     },
     setOverlap(state, payload) {
       const overlap = parseInt(payload.value);
@@ -68,6 +68,7 @@ export default new Vuex.Store({
   },
   getters: {
     groupTypes: () => GROUP_TYPES,
+    /*
     groups: (state) => {
       const result = [];
       for (const [idx, type] of GROUP_TYPES.entries()) {
@@ -83,6 +84,7 @@ export default new Vuex.Store({
       }
       return result;
     },
+    */
     division: (state) => {
       const result = [];
       if (state.numGroups % state.timeslots == 0) {

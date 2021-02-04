@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import { mapGetters, mapState } from 'vuex';
+  import { mapState } from 'vuex';
 
   const colorList = ['#4363d8', '#f58231', '#808080',
                      '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
@@ -37,8 +37,7 @@
       colorList
     }),
     computed: {
-      ...mapState(['matrix', 'solution']),
-      ...mapGetters(['groups']),
+      ...mapState(['matrix', 'solution', 'groups']),
       conflict() {
         const result = [];
         if (this.matrix && this.solution) {

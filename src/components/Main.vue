@@ -5,11 +5,11 @@
       <v-stepper-content step="1">
         <ClassConfig @next="step++" />
       </v-stepper-content>
-      <v-stepper-step editable :complete="step > 2" step="2">Invoeren Overlap</v-stepper-step>
+      <v-stepper-step :complete="step > 2" :editable="step > 2" step="2">Invoeren Overlap</v-stepper-step>
       <v-stepper-content step="2">
         <Overlap @next="step++" />
       </v-stepper-content>
-      <v-stepper-step editable :complete="step > 3" step="3">Berekenen Verdeling</v-stepper-step>
+      <v-stepper-step :complete="step > 3" :editable="step > 3" step="3">Berekenen Verdeling</v-stepper-step>
       <v-stepper-content step="3">
         <SolverConfig @next="step++" />
       </v-stepper-content>
