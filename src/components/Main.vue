@@ -9,12 +9,14 @@
       <v-stepper-content step="2">
         <Overlap @next="step++" />
       </v-stepper-content>
+      <!--
       <v-stepper-step :complete="step > 3" :editable="step > 3" step="3">Berekenen Verdeling</v-stepper-step>
       <v-stepper-content step="3">
         <SolverConfig @next="step++" />
       </v-stepper-content>
-      <v-stepper-step step="4">Bekijk Verdeling</v-stepper-step>
-      <v-stepper-content step="4">
+      -->
+      <v-stepper-step step="3">Bekijk Verdeling</v-stepper-step>
+      <v-stepper-content step="3">
         <SolutionView />
       </v-stepper-content>
     </v-stepper>
@@ -24,7 +26,7 @@
 <script>
   import ClassConfig from './ClassConfig';
   import Overlap from './Overlap';
-  import SolverConfig from './SolverConfig';
+  //import SolverConfig from './SolverConfig';
   import SolutionView from './SolutionView';
 
   export default {
@@ -32,7 +34,7 @@
     components: {
       ClassConfig,
       Overlap,
-      SolverConfig,
+      //SolverConfig,
       SolutionView
     },
     data: () => ({

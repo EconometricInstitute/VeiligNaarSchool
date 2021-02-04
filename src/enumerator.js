@@ -3,7 +3,7 @@
  * Enumerator functions *
  * ******************** */
 
-function solve_enumerator(matrix, sizes, upperBound, nCombs)
+function solve_enumerator(matrix, sizes, upperBound, nCombs, callbacks)
 {
     const state = {
         bestCosts: upperBound,
@@ -11,6 +11,7 @@ function solve_enumerator(matrix, sizes, upperBound, nCombs)
         currentSolution: [],
         count: 0,
         updateInterval: nCombs / 100 + 1,
+        nCombs,
         sizes
     }
 
@@ -28,7 +29,7 @@ function solve_enumerator(matrix, sizes, upperBound, nCombs)
     const combination = [];
     
     //console.log(state);
-    go(0, sizes[0], 0, classes, combination, matrix, state);
+    go(0, sizes[0], 0, classes, combination, matrix, state, callbacks);
     //console.log(state);
     //console.log("Best costs obtained: " + state.bestCosts);
     //console.log(state.count + " partitions have been considered");
@@ -36,26 +37,24 @@ function solve_enumerator(matrix, sizes, upperBound, nCombs)
     return state;
 }
 
-function go(offset, k, group, classes, combination, matrix, state) 
+function go(offset, k, group, classes, combination, matrix, state, callbacks) 
 {
     //console.log(k, classes, combination);
     if (k == 0) 
     {
-        evaluate(group, classes, combination, matrix, state);
+        evaluate(group, classes, combination, matrix, state, callbacks);
         return;
     }
     for (let i = offset; i <= classes.length - k; ++i) 
     {
-        if (classes[i]) {
-            combination.push(classes[i]);
-            go(i+1, k-1, group, classes, combination, matrix, state);
-            //delete combination[combination.length - 1];
-            combination.splice(combination.length-1, 1);
-        }
+        combination.push(classes[i]);
+        go(i+1, k-1, group, classes, combination, matrix, state, callbacks);
+        //delete combination[combination.length - 1];
+        combination.splice(combination.length-1, 1);
     }
 }
 
-function evaluate(group, classes, combination, matrix, state) 
+function evaluate(group, classes, combination, matrix, state, callbacks) 
 {	
     const nClasses = classes.length;
     const sizes = state.sizes;
@@ -78,9 +77,16 @@ function evaluate(group, classes, combination, matrix, state)
         present[combination[i]] = false;
         for(let j = i + 1; j < combination.length; j++)
         {
-            const x = combination[i];
+            try {
+                const x = combination[i];
             const y = combination[j];
             costs += matrix[x][y];
+            }
+            catch(err) {
+                console.log(err);
+                console.log(combination, i);
+                break;
+            }
         }
     }
     // Set the costs of this group
@@ -97,11 +103,11 @@ function evaluate(group, classes, combination, matrix, state)
             nextClasses[index] = i;
             index++;
         }
-    }
+}
     // If any classes are left, optimize them.
     if(nextClasses.length > 0)
     {
-        go(0, sizes[group + 1], group + 1, nextClasses, [], matrix, state);
+        go(0, sizes[group + 1], group + 1, nextClasses, [], matrix, state, callbacks);
     }
     // Otherwise, compute the costs and check whether a better solution has been found.
     else
@@ -109,7 +115,8 @@ function evaluate(group, classes, combination, matrix, state)
         state.count++;
         if(state.count % state.updateInterval == 0)
         {
-            console.log(state.count / state.updateInterval + " percent of the options has been considered.");
+            //console.log(state.count / state.updateInterval + " percent of the options has been considered.");
+            callbacks.progress(state.count, state.numCombs);
         }
         
         let thisCosts = 0;
@@ -121,7 +128,7 @@ function evaluate(group, classes, combination, matrix, state)
         {
             console.log(state.currentSolution);
             state.bestCosts = thisCosts;
-            state.bestSolution.splice(0, state.bestSolution.length);
+            state.bestSolution = [];
             for(const sol of state.currentSolution) 
             {
                 const newGroup = [];
@@ -131,6 +138,7 @@ function evaluate(group, classes, combination, matrix, state)
                 }
                 state.bestSolution.push(newGroup);
             }
+            callbacks.solution(state.bestSolution);
         }
     }
 }

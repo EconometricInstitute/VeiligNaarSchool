@@ -56,6 +56,7 @@
         // const solution = solve_utils.dummy_solver(this.division);
         this.running = false;
         this.$store.commit('setSolution', solution.bestDivision);
+        this.$store.dispatch('solve');
         this.$emit('next');
       },
       setSlots(val) {

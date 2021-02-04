@@ -45,7 +45,6 @@
           this.addGroup();
           cur++;
         }
-        this.groupNames.sort();
       },
       addGroup() {
         this.groupNames.push(''+(this.groupNames.length+1));
@@ -57,7 +56,8 @@
     }),
     computed: {
       groupData() {
-        const names = [...this.groupNames].sort();
+        const names = [...this.groupNames];
+        console.log(names);
         const prefix = this.prefix.trim();
         const result = [];
         for (const n of names) {

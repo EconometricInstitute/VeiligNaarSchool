@@ -13,9 +13,13 @@
         <template v-for="(g,row) in groups">
           <tr :key="'r'+g.short">
             <th scope="row" :style="{color: colors[row]}">{{g.short}} (Tijdslot {{solution[row]+1}})</th>
-            <td v-for="(c,col) in groups" :key="g.short+'-'+c.short" :class="{solutionCell: true, conflict: conflict[row][col]}">
-              <span v-if="matrix[row][col] > 0">{{matrix[row][col]}}</span>
-            </td>
+            <template v-for="(c,col) in groups">
+              <td v-if="row > col" :key="g.short+'-'+c.short"
+                  :class="{solutionCell: true, conflict: conflict[row][col], resolved: matrix[row][col] > 0 && !conflict[row][col]}">
+                <span v-if="matrix[row][col] > 0">{{matrix[row][col]}}</span>
+              </td>
+              <td v-else :key="g.short+'-'+c.short"></td>
+            </template>
           </tr>
         </template>
       </tbody>
@@ -71,7 +75,7 @@
   font-weight: bold;
 }
 .resolved {
-  color: green;
+  background-color: green;
   font-size: 100%;
 }
 </style>

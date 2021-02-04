@@ -36,6 +36,7 @@
     name: 'Overlap',
     methods: {
       next() {
+        this.$store.dispatch('solve');
         this.$emit('next');
       },
       setOverlap(row, col, value) {

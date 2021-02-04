@@ -1,6 +1,5 @@
 function solve_localsearch(matrix, sizes)
 {
-    console.log(matrix);
     // Initialize some parameters
     let nClasses = 0;
     for(let i = 0; i < sizes.length; i++)
