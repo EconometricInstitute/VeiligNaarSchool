@@ -5,14 +5,14 @@
         <tr>
           <th></th>
           <template v-for="(g,idx) of groups">
-            <th :key="g.short" :style="{color: colors[idx]}">{{g.short}} (Tijdslot {{solution[idx]}})</th>
+            <th :key="g.short" :style="{color: colors[idx]}">{{g.short}} (Tijdslot {{solution[idx]+1}})</th>
           </template>
         </tr>
       </thead>
       <tbody>
         <template v-for="(g,row) in groups">
           <tr :key="'r'+g.short">
-            <th scope="row" :style="{color: colors[row]}">{{g.short}} (Tijdslot {{solution[row]}})</th>
+            <th scope="row" :style="{color: colors[row]}">{{g.short}} (Tijdslot {{solution[row]+1}})</th>
             <td v-for="(c,col) in groups" :key="g.short+'-'+c.short" :class="{solutionCell: true, conflict: conflict[row][col]}">
               <span v-if="matrix[row][col] > 0">{{matrix[row][col]}}</span>
             </td>

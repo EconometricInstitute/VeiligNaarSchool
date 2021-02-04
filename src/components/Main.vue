@@ -15,7 +15,7 @@
       </v-stepper-content>
       <v-stepper-step step="4">Bekijk Verdeling</v-stepper-step>
       <v-stepper-content step="4">
-        <SolutionTable />
+        <SolutionView />
       </v-stepper-content>
     </v-stepper>
   </v-container>
@@ -25,7 +25,7 @@
   import ClassConfig from './ClassConfig';
   import Overlap from './Overlap';
   import SolverConfig from './SolverConfig';
-  import SolutionTable from './SolutionTable';
+  import SolutionView from './SolutionView';
 
   export default {
     name: 'Main',
@@ -33,7 +33,7 @@
       ClassConfig,
       Overlap,
       SolverConfig,
-      SolutionTable
+      SolutionView
     },
     data: () => ({
       step: 1
