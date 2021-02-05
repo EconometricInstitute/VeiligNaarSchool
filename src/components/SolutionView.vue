@@ -5,9 +5,9 @@
       <template v-slot:prepend>
         <v-progress-circular :value="solverState.progress" :indeterminate="solverState.indeterminate" class="progress" />
       </template>
-      Er wordt op dit moment nog gezocht naar een betere oplossing. De onderstaande oplossing kan nog veranderen.<br />
+      Er wordt op dit moment nog gezocht naar een betere verdeling. De onderstaande verdeling kan nog veranderen.<br />
       <span v-if="solutionQuality">
-        De gehonoreerde overlap van de huidige oplossing is {{solutionQuality.honored}} van in totaal {{solutionQuality.total}} overlap.
+        De totale overlap van de huidige verdeling is {{solutionQuality.honored}} van in totaal hoogstens {{solutionQuality.total}} overlap.
       </span>
       <template v-if="solverState.progressMsg">
         <br />Voortgang van het zoekproces: {{solverState.progressMsg}}
@@ -22,13 +22,13 @@
       Het zoeken is klaar. <br />
       <template v-if="solutionQuality">
         <span v-if="perfect">
-          Alle overlap is gehonoreerd. Dit is een <strong>perfecte oplossing</strong>.
+          De gevonden verdeling heeft geen overlap. Dit is een <strong>perfecte verdeling</strong>.
         </span>
         <span v-else>
-          De gehonoreerde overlap van de gevonden oplossing is {{solutionQuality.honored}} van in totaal {{solutionQuality.total}} overlap.
+          De totale overlap van de gevonden verdeling is {{solutionQuality.honored}} van in totaal hoogstens {{solutionQuality.total}} overlap.
         </span>
         <br />
-        <strong v-if="optimal && !perfect">Dit is de best mogelijke oplossing.</strong>
+        <strong v-if="optimal && !perfect">Dit is de best mogelijke verdeling.</strong>
       </template>
     </v-alert>
     <v-divider />
