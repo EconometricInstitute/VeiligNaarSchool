@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 import utils from '../utils';
+import { PREFIX } from '../parameters';
 
 Vue.use(Vuex)
 
@@ -30,13 +32,21 @@ function clearSolution(state) {
   state.solverState = {state: 'empty', progress: 0, progressMsg: ''};
 }
 
+function generateGroups(count) {
+  const result = [];
+  for (let i=1; i <= count; i++) {
+    result.push({short: ''+i, full: PREFIX+i});
+  }
+  return result;
+}
+
 export default new Vuex.Store({
   state: {
-    groups: [],
-    numGroups: 0,
-    matrix: initMatrix(0),
+    groups: generateGroups(8),
+    numGroups: 8,
+    matrix: initMatrix(8),
     timeslots: 3,
-    maxPerGroup: computeMax(0, 3),
+    maxPerGroup: computeMax(8, 3),
     solution: null,
     solutionQuality: null,
     worker: null,
@@ -50,6 +60,33 @@ export default new Vuex.Store({
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(payload.length);
       clearSolution(state);
+    },
+    addGroup(state, payload) {
+      state.groups.push(payload);
+      state.numGroups = state.groups.length;
+      state.maxPerGroup = computeMax(state.numGroups, state.timeslots);
+      for (const row of state.matrix) {
+        row.push(0);
+      }
+      const newRow = [];
+      for (let i=0; i < state.numGroups; i++) {
+        newRow.push(0);
+      }
+      state.matrix.push(newRow);
+      clearSolution(state);
+    },
+    deleteGroup(state, payload) {
+      state.groups.splice(payload, 1);
+      state.numGroups = state.groups.length;
+      state.maxPerGroup = computeMax(state.numGroups, state.timeslots);
+      state.matrix.splice(payload, 1);
+      for (const row of state.matrix) {
+        row.splice(payload, 1);
+      }
+      clearSolution(state);
+    },
+    updateGroup(state, payload) {
+      state.groups[payload.index] = payload.group;
     },
     setMatrix(state, payload) {
       Vue.set(state, 'matrix', payload);
