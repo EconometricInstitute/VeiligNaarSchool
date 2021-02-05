@@ -7,7 +7,7 @@
       </template>
       Er wordt op dit moment nog gezocht naar een betere verdeling. De onderstaande verdeling kan nog veranderen.<br />
       <span v-if="solutionQuality">
-        De totale overlap van de huidige verdeling is {{solutionQuality.honored}} van in totaal hoogstens {{solutionQuality.total}} overlap.
+        De resterende overlap van de huidige verdeling is {{solutionQuality.cost}} van in totaal {{solutionQuality.total}} overlap.
       </span>
       <template v-if="solverState.progressMsg">
         <br />Voortgang van het zoekproces: {{solverState.progressMsg}}
@@ -25,7 +25,7 @@
           De gevonden verdeling heeft geen overlap. Dit is een <strong>perfecte verdeling</strong>.
         </span>
         <span v-else>
-          De totale overlap van de gevonden verdeling is {{solutionQuality.honored}} van in totaal hoogstens {{solutionQuality.total}} overlap.
+          De resterende overlap van de gevonden verdeling is {{solutionQuality.cost}} van in totaal {{solutionQuality.total}} overlap.
         </span>
         <br />
         <strong v-if="optimal && !perfect">Dit is de best mogelijke verdeling.</strong>

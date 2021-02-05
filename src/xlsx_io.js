@@ -22,7 +22,10 @@ function writeSheet(groups, matrix, filename) {
             r++;
         }
     }
-    const book = {SheetNames: [SHEET_NAME], Sheets: {SHEET_NAME: sheet}};
+    const Sheets = {};
+    Sheets[SHEET_NAME] = sheet;
+    const book = {SheetNames: [SHEET_NAME], Sheets};
+    console.log(book);
     XLSX.writeFile(book, filename);
 }
 

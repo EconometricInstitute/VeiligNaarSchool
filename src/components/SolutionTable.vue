@@ -71,14 +71,14 @@
   text-align: center;
 }
 .conflict {
-  background-color: red;
+  background-color: lightcoral;
   font-weight: bold;
 }
 .resolved {
-  background-color: green;
+  background-color: lightgreen;
   font-size: 100%;
 }
 .upper {
-  background-color: grey;
+  background-color: #dbdbdb;
 }
 </style>
