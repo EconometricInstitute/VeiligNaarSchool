@@ -35,8 +35,8 @@ export default new Vuex.Store({
     groups: [],
     numGroups: 0,
     matrix: initMatrix(0),
-    timeslots: 2,
-    maxPerGroup: computeMax(0, 2),
+    timeslots: 3,
+    maxPerGroup: computeMax(0, 3),
     solution: null,
     solutionQuality: null,
     worker: null,
@@ -49,6 +49,10 @@ export default new Vuex.Store({
       state.maxPerGroup = computeMax(payload.length, state.timeslots);
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(payload.length);
+      clearSolution(state);
+    },
+    setMatrix(state, payload) {
+      Vue.set(state, 'matrix', payload);
       clearSolution(state);
     },
     setOverlap(state, payload) {

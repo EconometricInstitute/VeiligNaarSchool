@@ -5,10 +5,10 @@
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-text-field label="Aantal Tijdsloten" :value="timeslots" @input="setSlots" type="number" min="1" />
+            <v-text-field label="Aantal Tijdsloten" :value="timeslots" @change="setSlots" type="number" min="1" />
           </v-col>
           <v-col cols="6">
-            <v-text-field label="Maximum aantal groepen per tijdslot" :value="maxPerGroup" @input="setMax" type="number" min="1" />
+            <v-text-field label="Maximum aantal groepen per tijdslot" :value="maxPerGroup" @change="setMax" type="number" min="1" />
           </v-col>
         </v-row>
       </v-container>

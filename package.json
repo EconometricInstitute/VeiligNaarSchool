@@ -12,7 +12,8 @@
     "random-js": "^2.1.0",
     "vue": "^2.6.11",
     "vuetify": "^2.4.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

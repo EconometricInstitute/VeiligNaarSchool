@@ -18,7 +18,7 @@
                   :class="{solutionCell: true, conflict: conflict[row][col], resolved: matrix[row][col] > 0 && !conflict[row][col]}">
                 <span v-if="matrix[row][col] > 0">{{matrix[row][col]}}</span>
               </td>
-              <td v-else :key="g.short+'-'+c.short"></td>
+              <td v-else class="upper" :key="g.short+'-'+c.short"></td>
             </template>
           </tr>
         </template>
@@ -77,5 +77,8 @@
 .resolved {
   background-color: green;
   font-size: 100%;
+}
+.upper {
+  background-color: grey;
 }
 </style>

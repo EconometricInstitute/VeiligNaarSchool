@@ -24,6 +24,7 @@
     </v-simple-table>
     <v-card-actions>
       <v-btn color="primary" @click="next">Volgende</v-btn>
+      <v-btn color="primary" @click="exportData">Exporteer</v-btn>
       <v-btn @click="randomize">Randomize</v-btn>
     </v-card-actions>
   </v-card>
@@ -32,6 +33,7 @@
 <script>
   import { PREFIX } from '../parameters'
   import { mapState } from 'vuex';
+  import xlsx_io from '../xlsx_io';
 
   export default {
     name: 'Overlap',
@@ -39,6 +41,9 @@
       next() {
         this.$store.dispatch('solve');
         this.$emit('next');
+      },
+      exportData() {
+        xlsx_io.writeSheet(this.groups, this.matrix, 'overlap-sheet.xlsx');
       },
       setOverlap(row, col, value) {
         this.$store.commit('setOverlap', {row, col, value});

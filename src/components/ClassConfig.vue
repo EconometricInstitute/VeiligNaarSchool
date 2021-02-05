@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="2">
-          <v-text-field type="number" min="0" :value="groupNames.length"
+          <v-text-field type="number" min="0" max="60" :value="groupNames.length"
             @input="setGroups" label="Aantal klassen" />
         </v-col>
         <v-col cols="2">

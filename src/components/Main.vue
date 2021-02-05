@@ -15,7 +15,7 @@
         <SolverConfig @next="step++" />
       </v-stepper-content>
       -->
-      <v-stepper-step step="3">Bekijk Verdeling</v-stepper-step>
+      <v-stepper-step step="3">Maak Verdeling</v-stepper-step>
       <v-stepper-content step="3">
         <SolutionView />
       </v-stepper-content>
@@ -36,6 +36,11 @@
       Overlap,
       //SolverConfig,
       SolutionView
+    },
+    methods: {
+      jumpToStep(v) {
+        this.step = v;
+      }
     },
     data: () => ({
       step: 1
