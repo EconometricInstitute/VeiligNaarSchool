@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-simple-table dense>
+    <v-simple-table dense height="50vh">
       <thead>
         <tr>
           <th>{{PREFIX}}</th>
@@ -13,8 +13,9 @@
         <template v-for="(g,row) in groups">
           <tr :key="'r'+g.short" >
             <th scope="row">{{g.short}}</th>
-            <td v-for="(c,col) in groups" :key="g.short+'-'+c.short">
+            <td v-for="(c,col) in groups" :key="g.short+'-'+c.short" class="inputcell" :class="{upper: col > row, lower: col < row}">
               <v-text-field type="number" v-if="col != row" min="0"
+                :class="{upper: col > row, lower: col < row}"
                 :value="matrix[row][col]" @input="val => setOverlap(row, col, val)" />
             </td>
           </tr>
@@ -58,3 +59,14 @@
     }
   }
 </script>
+<style scoped>
+.inputcell {
+  min-width: 6em;
+}
+.upper {
+  background-color: #deeaf6;
+}
+.lower {
+  background-color: #fff2cc;
+}
+</style>
