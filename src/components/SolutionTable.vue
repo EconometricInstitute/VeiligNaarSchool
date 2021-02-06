@@ -4,17 +4,17 @@
       <thead>
         <tr>
           <th></th>
-          <template v-for="(g,idx) of groups">
+          <template v-for="(g,idx) of groupView">
             <th :key="g.short" :style="{color: colors[idx]}">{{g.short}} (Tijdslot {{solution[idx]+1}})</th>
           </template>
         </tr>
       </thead>
       <tbody>
-        <template v-for="(g,row) in groups">
+        <template v-for="(g,row) in groupView">
           <tr :key="'r'+g.short">
             <th scope="row" :style="{color: colors[row]}">{{g.short}} (Tijdslot {{solution[row]+1}})</th>
-            <template v-for="(c,col) in groups">
-              <td v-if="row > col" :key="g.short+'-'+c.short"
+            <template v-for="(c,col) in groupView">
+              <td v-if="row > col && g.originalIndex != c.originalIndex" :key="g.short+'-'+c.short"
                   :class="{solutionCell: true, conflict: conflict[row][col], resolved: matrix[row][col] > 0 && !conflict[row][col]}">
                 <span v-if="matrix[row][col] > 0">{{matrix[row][col]}}</span>
               </td>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
 
   const colorList = ['#4363d8', '#f58231', '#808080',
                      '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
@@ -41,7 +41,8 @@
       colorList
     }),
     computed: {
-      ...mapState(['matrix', 'solution', 'groups']),
+      ...mapState(['matrix', 'solution']),
+      ...mapGetters(['groupView']),
       conflict() {
         const result = [];
         if (this.matrix && this.solution) {

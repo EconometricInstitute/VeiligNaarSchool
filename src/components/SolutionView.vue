@@ -1,6 +1,9 @@
 <template>
   <v-card>
     <SolverConfigPanel :autoSolve="true" />
+    <v-alert v-if="solverState.state == 'error'" type="error">
+      Er is een probleem met de invoer. <br /> {{solverState.progressMsg}}
+    </v-alert>
     <v-alert v-if="solverState.state == 'running'" type="info">
       <template v-slot:prepend>
         <v-progress-circular :value="solverState.progress" :indeterminate="solverState.indeterminate" class="progress" />

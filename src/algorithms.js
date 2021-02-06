@@ -1,4 +1,4 @@
-import utils from './utils.js';
+//import utils from './utils.js';
 //import solve_enumerator from './enumerator';
 import solve_localsearch from './localsearch';
 
@@ -34,11 +34,11 @@ const callbacks = {
 
 addEventListener('message', event => {
     const data = event.data;
-    let sol = utils.dummy_solver(data.sizes);
-    callbacks.solution(sol);
+    //let sol = utils.dummy_solver(data.sizes);
+    //callbacks.solution(sol);
     progressCallback(0,1);
     setTimeout(() => {
-        sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
+        let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
         callbacks.solution(sol);
         finishCallback();
     }, 1500);

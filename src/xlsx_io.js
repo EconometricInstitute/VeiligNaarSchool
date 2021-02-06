@@ -48,7 +48,7 @@ function readSheet(workbook) {
             groupSet.add(c2.v.trim());
         }
     }
-    const groups = [...groupSet.values()].sort().map(n => ({short: n, full: PREFIX+n}));
+    const groups = [...groupSet.values()].sort().map(n => ({short: n, full: PREFIX+n, split: 1}));
     const groupIdx = {};
     for (let [idx, grp] of groups.entries()) {
         groupIdx[grp.short] = idx;
