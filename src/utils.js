@@ -1,3 +1,4 @@
+// TODO: make this count_combinations?
 function compute_combinations(sizes) {
     let n = sizes.reduce((a,b) => a+b, 0);
     let nCombs = 1.0;
@@ -43,4 +44,24 @@ function compute_conflicts(solution, matrix) {
     return {cost, honored: total-cost, total, conflicts};
 }
 
-export default {dummy_solver, compute_conflicts, compute_combinations};
+function compute_groupview(groups) {
+    const result = [];
+    for (const [index, group] of groups.entries()) {
+      if (group.split == 1) {
+        result.push({...group, originalIndex: index, copy: 1});
+      }
+      else {
+        for (let i=0; i < group.split; i++) {
+          const postfix = ' ('+(i+1)+'/'+group.split+')';
+          result.push({...group,
+                        short: group.short + postfix,
+                        full: group.full + postfix,
+                        originalIndex: index,
+                        copy: 2});
+        }
+      }
+    }
+    return result;
+}
+
+export default {dummy_solver, compute_conflicts, compute_combinations, compute_groupview};

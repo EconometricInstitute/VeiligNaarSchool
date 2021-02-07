@@ -46,7 +46,7 @@
         this.$emit('next');
       },
       exportData() {
-        xlsx_io.writeSheet(this.groupView, this.matrix, 'overlap-sheet.xlsx');
+        xlsx_io.writeSheet(this.groupView, this.groups, this.matrix, 'overlap-sheet.xlsx');
       },
       setOverlap(row, col, value) {
         this.$store.commit('setOverlap', {row, col, value});
@@ -63,7 +63,7 @@
       PREFIX: PREFIX.trim()
     }),
     computed: {
-      ...mapState(['matrix']), ...mapGetters(['groupView'])
+      ...mapState(['matrix','groups']), ...mapGetters(['groupView'])
     }
   }
 </script>

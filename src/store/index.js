@@ -279,23 +279,7 @@ export default new Vuex.Store({
       return prepareMatrix(state.matrix, getters.groupView);
     },
     groupView: (state) => {
-      const result = [];
-      for (const [index, group] of state.groups.entries()) {
-        if (group.split == 1) {
-          result.push({...group, originalIndex: index, copy: 1});
-        }
-        else {
-          for (let i=0; i < group.split; i++) {
-            const postfix = ' ('+(i+1)+'/'+group.split+')';
-            result.push({...group,
-                          short: group.short + postfix,
-                          full: group.full + postfix,
-                          originalIndex: index,
-                          copy: 2});
-          }
-        }
-      }
-      return result;
+      return utils.compute_groupview(state.groups);
     },
     solutionLists: (state, getters) => {
       const result = [];

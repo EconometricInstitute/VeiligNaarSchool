@@ -46,9 +46,6 @@
                     <v-text-field label="Splitsen in" type="number" min="1" :value="g.split" @input="val => updateSplit(idx,val)"/>
                   </v-list-item-content>
                 </template>
-<!--                <v-list-item-action>
-                  <v-checkbox class="splitbox" label="splitsen" v-show="splitAll" />
-                </v-list-item-action> -->
                 <v-list-item-action>
                   <v-icon @click.stop="remove(idx)">mdi-delete</v-icon>
                 </v-list-item-action>
@@ -58,24 +55,6 @@
         </v-col>
       </v-row>
     </v-container>
-<!--    
-      <v-row>
-        <v-col >
-
-          <v-text-field class="mw-16" :prefix="prefix" :value="g.short" @input="val => update(idx,val)">
-            <template v-slot:append-outer>
-              <v-toolbar flat dense>
-                <v-toolbar-items>
-                  <v-checkbox class="splitbox" label="splitsen" v-if="splitAll" />                  
-                  <v-icon @click.stop="remove(idx)">mdi-delete</v-icon>
-                </v-toolbar-items>
-              </v-toolbar>
-            </template>
-          </v-text-field>
-        </v-col>
-      </v-row>
-    </v-container>
--->
     <v-card-actions>
       <v-btn color="primary" :disabled="error != null" @click="next">Volgende</v-btn>
     </v-card-actions>
