@@ -2,7 +2,7 @@
   <v-card>
       <v-card outlined elevation="2" class="slot" v-for="(ts,idx) of solutionLists" :key="idx">
         <v-card-title>
-          <v-icon class="icon">mdi-clock</v-icon> Tijdslot {{idx+1}}
+          <v-icon class="icon">mdi-clock</v-icon> {{timeslotNames[idx]}}
         </v-card-title>
         <v-card-text>
         <v-chip draggable class="group" v-for="(grp,idx2) of ts"
@@ -13,11 +13,12 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
 
   export default {
-    name: 'SolutionList',
+    name: 'SolutionTimeslotList',
     computed: {
+      ...mapState(['timeslotNames']),
       ...mapGetters(['solutionLists']),
     }
   }

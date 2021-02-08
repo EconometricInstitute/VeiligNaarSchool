@@ -5,6 +5,64 @@ import utils from './utils';
 const OVERLAP_SHEET = 'Overlap';
 const GROUP_SHEET = 'Groups';
 
+const TIMESLOT_SHEET = 'Tijdsloten';
+const SOLUTION_SHEET = 'Verdeling';
+
+function writeSolution(groups, solution, slotnames, filename) {
+    let max_ts = 0;
+    let ts_groups = {};
+    let max_groups = 1;
+    const g_sheet = {};
+    g_sheet['A1'] = {t: 's', v: 'Groep'};
+    g_sheet['B1'] = {t: 's', v: 'Tijdslot'};
+    for (const [idx, grp] of groups.entries()) {
+        const ts = solution[idx] + 1;
+        max_ts = Math.max(ts, max_ts);
+        g_sheet['A'+(idx+2)] = {t: 's', v: grp.full};
+        g_sheet['B'+(idx+2)] = {t: 's', v: slotnames[ts-1]};
+        if (ts_groups[ts]) {
+            ts_groups[ts].push(grp);
+            max_groups = Math.max(max_groups, ts_groups[ts].length);
+        }
+        else {
+            ts_groups[ts] = [grp];
+        }
+    }
+    g_sheet['!ref'] = 'A1:B'+(solution.length+2);
+    g_sheet['!cols'] = [{wch:15},{wch:15}];
+
+    const t_sheet = {};
+    t_sheet['A1'] = {t: 's', v: 'Tijdslot'};
+    t_sheet['B1'] = {t: 's', v: 'Groepen'}; 
+    let r=1;
+    for (let ts=1; ts <= max_ts; ts++) {
+        const groups = ts_groups[ts];
+        console.log(groups);
+        if (groups) {
+            t_sheet['A'+(r+1)] = {t: 's', v: slotnames[ts-1]};
+            for (const [idx,grp] of groups.entries()) {
+                const address = XLSX.utils.encode_cell({r:r, c:idx+1});
+                t_sheet[address] = {t: 's', v: grp.full};
+            }
+            r++;
+        }
+    }
+    t_sheet['!merges'] = [{s:{r:0,c:1},e:{r:0,c:max_groups+1}}]
+    t_sheet['!ref'] = XLSX.utils.encode_range({s: {r: 0, c: 0}, e: {r, c:max_groups+1}});
+    const cols = [];
+    for (let i=0; i <= max_groups; i++) {
+        cols.push({wch: 15});
+    }
+    t_sheet['!cols'] = cols;
+
+    const Sheets = {};
+    Sheets[SOLUTION_SHEET] = g_sheet;
+    Sheets[TIMESLOT_SHEET] = t_sheet;
+    const book = {SheetNames: [SOLUTION_SHEET, TIMESLOT_SHEET], Sheets};
+
+    XLSX.writeFile(book, filename);
+}
+
 function writeSheet(groups, rawGroups, matrix, filename) {
     const n = groups.length;
     const o_sheet = {};
@@ -112,4 +170,4 @@ function readSheet(workbook) {
     return {groups: raw_groups, matrix};
 }
 
-export default {writeSheet, readSheet};
+export default {writeSheet, readSheet, writeSolution};

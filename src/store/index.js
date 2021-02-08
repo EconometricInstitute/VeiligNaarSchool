@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import utils from '../utils';
-import { PREFIX } from '../parameters';
+import { PREFIX, TS_PREFIX } from '../parameters';
 
 Vue.use(Vuex)
 
@@ -113,6 +113,22 @@ function maxSplit(groups) {
   return max;
 }
 
+function computeMatrixIndex(idx, groups) {
+  let result = 0;
+  for (let i=0; i < idx; i++) {
+    result += groups[i].split;
+  }
+  return result;
+}
+
+function computeSlotNames(count) {
+  const result = [];
+  for (let i=1; i <= count; i++) {
+    result.push(TS_PREFIX+i);
+  }
+  return result;
+}
+
 export default new Vuex.Store({
   state: {
     groups: generateGroups(8),
@@ -120,6 +136,7 @@ export default new Vuex.Store({
     maxSplit: 1,
     matrix: initMatrix(8),
     timeslots: 3,
+    timeslotNames: computeSlotNames(3),
     maxPerGroup: computeMax(8, 3),
     solution: null,
     solutionQuality: null,
@@ -133,6 +150,7 @@ export default new Vuex.Store({
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
       state.maxSplit = maxSplit(state.groups);
+      state.timeslots = Math.max(state.timeslots, state.maxSplit);
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(n);
       clearSolution(state);
@@ -143,33 +161,42 @@ export default new Vuex.Store({
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
       state.maxSplit = maxSplit(state.groups);
+      state.timeslots = Math.max(state.timeslots, state.maxSplit);
       expandMatrix(state.matrix, payload.split);
       clearSolution(state);
     },
     deleteGroup(state, payload) {
       const split = state.groups[payload].split;
-      state.groups.splice(payload, split);
+      const splitIdx = computeMatrixIndex(payload, state.groups);
+      state.groups.splice(payload, 1);
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
       state.maxSplit = maxSplit(state.groups);
-      resizeMatrix(state.matrix, payload, split)
+      resizeMatrix(state.matrix, splitIdx, split)
       clearSolution(state);
     },
     updateGroupName(state, payload) {
-      state.groups[payload.index] = payload.group;
+      const grp = state.groups[payload.index];
+      grp.short = payload.name;
+      grp.full = PREFIX + payload.name;
     },
     updateGroupSplit(state, payload) {
       const grp = state.groups[payload.index];
       const splitDiff = payload.split - grp.split;
+      if (splitDiff == 0) {
+        return;
+      }
+      const idx = computeMatrixIndex(payload.index, state.groups);
       if (splitDiff != 0) {
-        resizeMatrix(state.matrix, payload.index, splitDiff);
+        resizeMatrix(state.matrix, idx, splitDiff);
       }
       Vue.set(grp, 'split', payload.split);
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
       state.maxSplit = maxSplit(state.groups);
+      state.timeslots = Math.max(state.timeslots, state.maxSplit);
     },
     setMatrix(state, payload) {
       Vue.set(state, 'matrix', payload);
@@ -184,19 +211,23 @@ export default new Vuex.Store({
     setSlots(state, payload) {
       clearSolution(state);
       const timeslots = parseInt(payload);
-      if (!Number.isInteger(timeslots) || timeslots < 1) {
-        Vue.set(state, 'solverState', {state: 'error', progressMsg: 'Het aantal tijdsloten moet een geheel getal groter dan nul zijn'});
+      if (!Number.isInteger(timeslots) || timeslots < state.maxSplit) {
+        Vue.set(state, 'solverState', {state: 'error', progressMsg: 'Het aantal tijdsloten moet een geheel getal zijn dat tenminste '+state.maxSplit+' is'});
       }
       else {
         state.timeslots = timeslots;
+        state.timeslotNames = computeSlotNames(timeslots);
         state.maxPerGroup = computeMax(state.numGroups, payload);
       }
+    },
+    updateSlotName(state, payload) {
+      Vue.set(state.timeslotNames, payload.index, payload.name);
     },
     setMaxGroups(state, payload) {
       clearSolution(state);
       const maxGroups = parseInt(payload);
-      if (!Number.isInteger(maxGroups) || maxGroups < 1) {
-        Vue.set(state, 'solverState', {state: 'error', progressMsg: 'Het maximum aantal groepen moet een geheel getal groter dan nul zijn'});
+      if (!Number.isInteger(maxGroups) || maxGroups < state.maxSplit) {
+        Vue.set(state, 'solverState', {state: 'error', progressMsg: 'Het aantal tijdsloten moet een geheel getal zijn dat tenminste '+state.maxSplit+' is'});
       }
       else {
         state.maxPerGroup = maxGroups;
@@ -235,16 +266,20 @@ export default new Vuex.Store({
       }
     },
     solve({commit, state, getters, dispatch}) {
-      commit('clearSolution');
-      console.log(state.timeslots, state.maxPerGroup);
-      console.log(!Number.isInteger(state.timeslots), !Number.isInteger(state.maxPerGroup)
-      , state.timeslots < 1 , state.maxPerGroup < 1
-      , state.timeslots * state.maxPerGroup < state.groupCount);
       if (!Number.isInteger(state.timeslots) || !Number.isInteger(state.maxPerGroup)
-        || state.timeslots < 1 || state.maxPerGroup < 1
-        || state.timeslots * state.maxPerGroup < state.groupCount) {
-          commit('setProgress',{state: 'error', progressMsg: 'Het is niet mogelijk om met deze instellingen een verdeling te berekenen. Repareer de instellingen.'});
+      || state.timeslots < state.maxSplit || state.maxPerGroup < 1
+      || state.timeslots * state.maxPerGroup < state.groupCount) {
+        commit('setProgress',{state: 'error', progressMsg: 'Het is niet mogelijk om met deze instellingen een verdeling te berekenen. Repareer de instellingen.'});
+        return;
       }
+      if (state.solverState && state.solverState.state == 'error') {
+        return;
+      }
+      commit('clearSolution');
+      //console.log(!Number.isInteger(state.timeslots) , !Number.isInteger(state.maxPerGroup)
+      //, state.timeslots < state.maxSplit , state.maxPerGroup < 1
+      //, state.timeslots * state.maxPerGroup < state.groupCount);
+
       const worker = new Worker('../algorithms.js', { type: 'module' });
       worker.onmessage = event => {
         const data = event.data;
@@ -305,6 +340,20 @@ export default new Vuex.Store({
         for (let i=0; i < state.solution.length; i++) {
           const slot = state.solution[i];
           result[slot].push(getters.groupView[i]);
+        }
+      }
+      return result;
+    },
+    solutionGroupLists: (state, getters) => {
+      const result = [];
+      if (state.solution) {
+        for (const group of state.groups) {
+          result.push({group, subgroups: []});
+        }
+        for (let i=0; i < state.solution.length; i++) {
+          const subgroup = getters.groupView[i];
+          const timeslot = state.timeslotNames[state.solution[i]];
+          result[subgroup.originalIndex].subgroups.push({subgroup, timeslot});
         }
       }
       return result;

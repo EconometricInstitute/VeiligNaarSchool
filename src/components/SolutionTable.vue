@@ -5,14 +5,14 @@
         <tr>
           <th></th>
           <template v-for="(g,idx) of groupView">
-            <th :key="g.short" :style="{color: colors[idx]}">{{g.short}} (Tijdslot {{solution[idx]+1}})</th>
+            <th :key="g.short" :style="{color: colors[idx]}">{{g.short}} ({{timeslotNames[solution[idx]]}})</th>
           </template>
         </tr>
       </thead>
       <tbody>
         <template v-for="(g,row) in groupView">
           <tr :key="'r'+g.short">
-            <th scope="row" :style="{color: colors[row]}">{{g.short}} (Tijdslot {{solution[row]+1}})</th>
+            <th scope="row" :style="{color: colors[row]}">{{g.short}} ({{timeslotNames[solution[row]]}})</th>
             <template v-for="(c,col) in groupView">
               <td v-if="row > col && g.originalIndex != c.originalIndex" :key="g.short+'-'+c.short"
                   :class="{solutionCell: true, conflict: conflict[row][col], resolved: matrix[row][col] > 0 && !conflict[row][col]}">
@@ -41,7 +41,7 @@
       colorList
     }),
     computed: {
-      ...mapState(['matrix', 'solution']),
+      ...mapState(['matrix', 'solution', 'timeslotNames']),
       ...mapGetters(['groupView']),
       conflict() {
         const result = [];

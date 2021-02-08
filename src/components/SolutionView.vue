@@ -32,17 +32,23 @@
         </span>
         <br />
         <strong v-if="optimal && !perfect">Dit is de best mogelijke verdeling.</strong>
+        <v-divider style="margin-top: 0.75em; margin-bottom: 0.75em;" />
+        <v-btn color="primary" @click="exportSolution">Exporteer Verdeling</v-btn>
       </template>
     </v-alert>
     <v-divider />
     <v-tabs v-model="tab">
       <v-tabs-slider />
-      <v-tab>Verdeling</v-tab>
+      <v-tab>Klassen</v-tab>
+      <v-tab>Tijdlsoten</v-tab>
       <v-tab>Tabel</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <SolutionList />
+        <SolutionClassList/>
+      </v-tab-item>
+      <v-tab-item>
+        <SolutionTimeslotList />
       </v-tab-item>
       <v-tab-item>
         <SolutionTable />
@@ -52,18 +58,21 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
+  import xlsx_io from '../xlsx_io';
 
   import SolverConfigPanel from './SolverConfigPanel';
   import SolutionTable from './SolutionTable';
-  import SolutionList from './SolutionList';
+  import SolutionClassList from './SolutionClassList';
+  import SolutionTimeslotList from './SolutionTimeslotList';
 
   export default {
     name: 'SolutionView',
     components: {
       SolverConfigPanel,
       SolutionTable,
-      SolutionList
+      SolutionClassList,
+      SolutionTimeslotList
     },
     methods: {
       solve() {
@@ -71,13 +80,17 @@
       },
       stop() {
         this.$store.dispatch('stop');
+      },
+      exportSolution() {
+        xlsx_io.writeSolution(this.groupView, this.solution, this.timeslotNames, 'verdeling.xlsx');
       }
     },
     data: () => ({
       tab: 0
     }),
     computed: {
-      ...mapState(['solverState','solutionQuality']),
+      ...mapState(['solverState','solutionQuality', 'solution', 'timeslotNames']),
+      ...mapGetters(['groupView']),
       perfect() {
         return this.solutionQuality && this.solutionQuality.honored == this.solutionQuality.total;
       },
