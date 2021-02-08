@@ -40,7 +40,7 @@
     <v-tabs v-model="tab">
       <v-tabs-slider />
       <v-tab>Klassen</v-tab>
-      <v-tab>Tijdlsoten</v-tab>
+      <v-tab>Tijdsloten</v-tab>
       <v-tab>Tabel</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">

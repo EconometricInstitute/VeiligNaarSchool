@@ -145,6 +145,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setGroups(state, payload) {
+      clearSolution(state);
       state.groups = [...payload];
       const n = computeNumGroups(payload);
       state.numGroups = n;
@@ -153,9 +154,9 @@ export default new Vuex.Store({
       state.timeslots = Math.max(state.timeslots, state.maxSplit);
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(n);
-      clearSolution(state);
     },
     addGroup(state, payload) {
+      clearSolution(state);
       state.groups.push(payload);
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
@@ -163,9 +164,9 @@ export default new Vuex.Store({
       state.maxSplit = maxSplit(state.groups);
       state.timeslots = Math.max(state.timeslots, state.maxSplit);
       expandMatrix(state.matrix, payload.split);
-      clearSolution(state);
     },
     deleteGroup(state, payload) {
+      clearSolution(state);
       const split = state.groups[payload].split;
       const splitIdx = computeMatrixIndex(payload, state.groups);
       state.groups.splice(payload, 1);
@@ -174,7 +175,6 @@ export default new Vuex.Store({
       state.maxPerGroup = computeMax(n, state.timeslots);
       state.maxSplit = maxSplit(state.groups);
       resizeMatrix(state.matrix, splitIdx, split)
-      clearSolution(state);
     },
     updateGroupName(state, payload) {
       const grp = state.groups[payload.index];
@@ -182,6 +182,7 @@ export default new Vuex.Store({
       grp.full = PREFIX + payload.name;
     },
     updateGroupSplit(state, payload) {
+      clearSolution(state);
       const grp = state.groups[payload.index];
       const splitDiff = payload.split - grp.split;
       if (splitDiff == 0) {
@@ -199,14 +200,14 @@ export default new Vuex.Store({
       state.timeslots = Math.max(state.timeslots, state.maxSplit);
     },
     setMatrix(state, payload) {
-      Vue.set(state, 'matrix', payload);
       clearSolution(state);
+      Vue.set(state, 'matrix', payload);
     },
     setOverlap(state, payload) {
+      clearSolution(state);
       const overlap = parseInt(payload.value);
       Vue.set(state.matrix[payload.row], payload.col, overlap);
       Vue.set(state.matrix[payload.col], payload.row, overlap);
-      clearSolution(state);
     },
     setSlots(state, payload) {
       clearSolution(state);

@@ -12,6 +12,7 @@
           <v-toolbar dense flat>
             <v-toolbar-items>
               <v-btn small color="primary" @click="addGroup">Voeg klas toe</v-btn>
+              <v-btn small color="secondary" @click="quickTool">Snel Aanmaken</v-btn>
               <v-card flat>
                 <v-card-text>
                   <v-checkbox :label="'Splits klassen'+(splitAll ? ' in:' : '')" v-model="splitAll" @change="val => setSplitAll(val)"/>
@@ -58,6 +59,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <ClassConfigCreateDialog ref="dialog" />
     <v-card-actions>
       <v-btn color="primary" :disabled="error != null" @click="next">Volgende</v-btn>
     </v-card-actions>
@@ -67,12 +69,16 @@
 <script>
   import { mapState } from 'vuex';
   import { PREFIX } from '../parameters';
+  import ClassConfigCreateDialog from './ClassConfigCreateDialog';
 
   const MAX_SIZE = 60;
   const MAX_SPLIT = 4;
 
   export default {
     name: 'ClassConfig',
+    components: {
+      ClassConfigCreateDialog
+    },
     data: () => ({
       prefix: PREFIX,
       max_size: MAX_SIZE,
@@ -114,6 +120,9 @@
         const name = this.groups.length+1;
         this.$store.commit('addGroup', {short: ''+name, full: PREFIX+name, split: this.splitAll ? this.lastSplit : 1});
         this.error = null;
+      },
+      quickTool() {
+        this.$refs.dialog.show();
       },
       signalImport() {
         this.$nextTick(() => {
