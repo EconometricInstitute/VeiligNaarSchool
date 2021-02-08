@@ -18,7 +18,7 @@
 
       <v-spacer></v-spacer>
       <v-btn class="space" color="primary" @click="importData">Importeer</v-btn>
-      <v-btn class="space" color="primary" @click="welcome">Over deze Applicatie</v-btn>
+      <v-btn class="space" color="primary" @click="welcome">Help</v-btn>
     </v-app-bar>
 
     <v-main>

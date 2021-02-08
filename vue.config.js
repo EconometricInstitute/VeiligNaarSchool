@@ -14,11 +14,11 @@ module.exports = {
     ],  
   },
   outputDir: path.resolve(__dirname, "docs"),
-  publicPath: process.env.NODE_ENV === 'production' ? '/VeiligNaarSchool/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/VerspreidNaarSchool/' : '/',
   pages: {
     index: {
       entry: './src/main.js',
-      title: 'Veilig Naar School'
+      title: 'Verspreid Naar School'
     }
   }  
 }

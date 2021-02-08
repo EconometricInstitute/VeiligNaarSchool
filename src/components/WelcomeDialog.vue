@@ -1,31 +1,50 @@
 <template>
-  <v-dialog v-model="visible" max-width="65em">
+  <v-dialog v-model="visible" max-width="60em">
     <v-card>
     <v-card-title>Verspreid naar school</v-card-title>
     <v-card-text>
-      <p>Tijdens Corona doen we allemaal ons best om onderling contact zoveel mogelijk te vermijden.
-        Basisscholen kunnen hieraan bijdragen door klassen op verschillende tijden te laten starten en eindigen.
-        Op deze manier wordt drukte in de wijk, op het schoolplein en bij de ingang van de school zoveel mogelijk vermeden.
-        Scholen kunnen ook de leerlingen verdelen over verschillende dagen.
-        Daarbij krijgt bijvoorbeeld de ene helft van de leerlingen op maandag en donderdag les, en de andere helft op dinsdag en vrijdag.
-        Ook hiermee wordt drukte vermeden. Veel ouders hebben meerdere kinderen op dezelfde school.
-        Het is daarom belangrijk om het aangepaste schema zo te maken dat zoveel mogelijk ouders in één keer hun kinderen weg kunnen brengen.
-        Het is niet wenselijk dat een ouder elk kind apart naar school moet brengen.
-        Dat is niet alleen vervelend voor de ouders, maar vermindert ook het effect van het spreiden van de lestijden.
-        In veel gevallen is het helaas niet mogelijk om dit volledig te voorkomen, maar op deze website vindt u een computerprogramma om een schema te maken dat dit wel zoveel mogelijk tegengaat.
-        Zo kunnen onze kinderen allemaal veilig verspreid naar school.
-      </p>
+      <v-container>
+        <v-row>
+          <v-col>
+            Deze tool kan een verdeling maken van klassen over tijdsloten, zodat we verspreid naar school kunnen. 
+            Dit wordt zo goed mogelijk gedaan, zodat zoveel mogelijk ouders hun kinderen op hetzelfde tijdstip
+            naar school kunnen brengen.
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            Alle berekeningen worden in uw web-browser uitgevoerd. Er wordt geen gevoelige informatie over het internet gestuurd.
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            Deze tool is een initiatief van Paul Bouman, Twan Dollevoet, Wilco van den Heuvel en Remy Spliet, onderzoekers aan
+            Erasmus Universiteit Rotterdam.
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn href="https://www.eur.nl" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
+            <v-btn class="mg-left" href="https://www.youtube.com" target="_blank"><v-icon>mdi-youtube</v-icon>Uitleg Videos</v-btn>
+            <v-btn class="mg-left" href="https://www.ese.eur.nl" target="_blank"><v-icon>mdi-school</v-icon>Over ESE</v-btn>
+            <v-btn class="mg-left" href="https://github.com/EconometricInstitute/VerspreidNaarSchool" target="_blank"><v-icon>mdi-github</v-icon>Broncode</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card-text>
     <v-divider />
     <v-card-actions >
       <v-spacer />
       <v-btn color="primary" @click="close">Begin</v-btn>
+      <v-spacer />
     </v-card-actions>
   </v-card>
   </v-dialog>
 </template>
 
 <script>
+  const show_default = window.localStorage['hideWelcome'] ? false : true;
+
   export default {
     name: 'WelcomeDialog',
     methods: {
@@ -34,10 +53,16 @@
       },
       close() {
         this.visible = false;
+        window.localStorage['hideWelcome'] = true;
       }
     },
     data: () => ({
-      visible: true
+      visible: show_default
     })
   }
 </script>
+<style scoped>
+.mg-left {
+  margin-left: 0.8em;
+}
+</style>

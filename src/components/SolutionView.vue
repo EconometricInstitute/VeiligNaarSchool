@@ -39,16 +39,16 @@
     <v-divider />
     <v-tabs v-model="tab">
       <v-tabs-slider />
-      <v-tab>Klassen</v-tab>
       <v-tab>Tijdsloten</v-tab>
+      <v-tab>Klassen</v-tab>
       <v-tab>Tabel</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <SolutionClassList/>
+        <SolutionTimeslotList />
       </v-tab-item>
       <v-tab-item>
-        <SolutionTimeslotList />
+        <SolutionClassList />
       </v-tab-item>
       <v-tab-item>
         <SolutionTable />
