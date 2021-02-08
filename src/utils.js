@@ -65,4 +65,17 @@ function compute_groupview(groups) {
     return result;
 }
 
-export default {dummy_solver, compute_conflicts, compute_combinations, compute_groupview};
+
+function get_url_param(param) {
+    if (window && window.location && window.location.search) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+    return undefined;
+  }
+
+export default {dummy_solver,
+                compute_conflicts,
+                compute_combinations,
+                compute_groupview,
+                get_url_param};

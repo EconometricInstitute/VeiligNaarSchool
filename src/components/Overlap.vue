@@ -28,7 +28,7 @@
     <v-card-actions>
       <v-btn color="primary" @click="next">Volgende</v-btn>
       <v-btn color="primary" @click="exportData">Exporteer</v-btn>
-      <v-btn @click="randomize">Randomize</v-btn>
+      <v-btn @click="randomize" v-if="advanced">Randomize</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -63,7 +63,7 @@
       PREFIX: PREFIX.trim()
     }),
     computed: {
-      ...mapState(['matrix','groups']), ...mapGetters(['groupView'])
+      ...mapState(['matrix','groups','advanced']), ...mapGetters(['groupView'])
     }
   }
 </script>

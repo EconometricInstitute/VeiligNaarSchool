@@ -13,13 +13,14 @@
         </v-row>
         <v-row>
           <v-col>
-            Alle berekeningen worden in uw web-browser uitgevoerd. Er wordt geen gevoelige informatie over het internet gestuurd.
+            Alle berekeningen worden in uw eigen web-browser uitgevoerd. Er is geen gevoelige informatie nodig en de tool
+            stuurt geen ingevulde gegevens over het internet.
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             Deze tool is een initiatief van Paul Bouman, Twan Dollevoet, Wilco van den Heuvel en Remy Spliet, onderzoekers aan
-            Erasmus Universiteit Rotterdam.
+            de Erasmus Universiteit Rotterdam.
           </v-col>
         </v-row>
         <v-row>

@@ -141,7 +141,8 @@ export default new Vuex.Store({
     solution: null,
     solutionQuality: null,
     worker: null,
-    solverState: {state: 'empty', progress: 0, progressMsg: ''}
+    solverState: {state: 'empty', progress: 0, progressMsg: ''},
+    advanced: utils.get_url_param('advanced')
   },
   mutations: {
     setGroups(state, payload) {
@@ -252,6 +253,9 @@ export default new Vuex.Store({
       Vue.set(state, 'solverState', payload);
       //state.solverState = payload;
       //console.log(payload);
+    },
+    setAdvanced(state, payload) {
+      state.advanced = payload;
     }
    },
   actions: {
