@@ -59,9 +59,11 @@ export default {
             const workbook = XLSX.read(data, {type: 'array'});
             try {
               const process = xlsx_io.readSheet(workbook);
+              console.log(process);
               this.$store.commit('setGroups', process.groups);
               this.$store.commit('setMatrix', process.matrix);
               this.$refs.main.jumpToStep(2);
+              this.$refs.main.signalImport();
             }
             catch (err) {
               console.log(err);

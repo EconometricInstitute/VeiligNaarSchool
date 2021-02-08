@@ -52,12 +52,13 @@ function compute_groupview(groups) {
       }
       else {
         for (let i=0; i < group.split; i++) {
-          const postfix = ' ('+(i+1)+'/'+group.split+')';
+          //const postfix = ' ('+(i+1)+'/'+group.split+')';
+          const postfix = ' ('+(i+1)+')';
           result.push({...group,
                         short: group.short + postfix,
                         full: group.full + postfix,
                         originalIndex: index,
-                        copy: 2});
+                        copy: (i+1)});
         }
       }
     }

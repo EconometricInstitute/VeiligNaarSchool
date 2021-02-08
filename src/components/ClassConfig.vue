@@ -20,7 +20,7 @@
             </v-toolbar-items>
             <template v-if="splitAll">
               <v-toolbar-items style="margin-left: 1em; margin-right: 1em;">
-                <v-btn v-for="spl in maxMassSplit" :key="spl" small @click="()=>massSplit(spl)">{{spl}}</v-btn>
+                <v-btn v-for="spl in splitBox" :key="spl.value" small @click="()=>massSplit(spl.value)">{{spl.value == '1' ? spl.text : spl.value}}</v-btn>
               </v-toolbar-items>
             </template>
             <v-spacer />
@@ -43,7 +43,10 @@
                 <template v-if="splitAll">
                   &nbsp;
                   <v-list-item-content class="maxw-8" >
+                    <!--
                     <v-text-field label="Splitsen in" type="number" min="1" :value="g.split" @input="val => updateSplit(idx,val)"/>
+                    -->
+                    <v-select label="Splits in" class="mw-6" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
                   </v-list-item-content>
                 </template>
                 <v-list-item-action>
@@ -66,6 +69,7 @@
   import { PREFIX } from '../parameters';
 
   const MAX_SIZE = 60;
+  const MAX_SPLIT = 4;
 
   export default {
     name: 'ClassConfig',
@@ -74,7 +78,6 @@
       max_size: MAX_SIZE,
       error: null,      
       splitAll: false,
-      maxMassSplit: 4,
       lastSplit: 2
     }),
     methods: {
@@ -112,6 +115,11 @@
         this.$store.commit('addGroup', {short: ''+name, full: PREFIX+name, split: this.splitAll ? this.lastSplit : 1});
         this.error = null;
       },
+      signalImport() {
+        this.$nextTick(() => {
+          this.splitAll = this.maxSplit > 1;
+        });
+      },
       setSplitAll(val) {
         this.splitAll = val;
         if (val) {
@@ -143,7 +151,14 @@
       }
     },
     computed: {
-      ...mapState(['groups'])
+      ...mapState(['groups', 'maxSplit']),
+      splitBox() {
+        const result = [{value: 1, text: 'Niet splitsen', disabled: false}];
+        for (let i=2; i <= MAX_SPLIT; i++) {
+          result.push({value: i, text: ''+i+' delen', disabled: false});
+        }
+        return result;
+      }
     }
   }
 </script>

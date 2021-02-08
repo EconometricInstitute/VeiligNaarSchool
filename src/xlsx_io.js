@@ -58,7 +58,8 @@ function readSheet(workbook) {
             const c1 = g_sheet['A'+(r+1)];
             const c2 = g_sheet['B'+(r+1)];
             if (c1 && c1.v && c2 && Number.isInteger(c2.v) && c2.v >= 1) {
-                raw_groups.push({short: c1.v, full: PREFIX+c1.v, split: c2.v});
+                const grp = {short: c1.v, full: PREFIX+c1.v, split: c2.v};
+                raw_groups.push(grp);
             }
         }
     }

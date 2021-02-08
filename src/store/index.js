@@ -103,10 +103,21 @@ function prepareMatrix(matrix, groupView) {
   return result;
 }
 
+function maxSplit(groups) {
+  let max = 1;
+  for (const grp of groups) {
+    if (grp.split && Number.isInteger(grp.split)) {
+      max = Math.max(max, grp.split);
+    }
+  }
+  return max;
+}
+
 export default new Vuex.Store({
   state: {
     groups: generateGroups(8),
     numGroups: 8,
+    maxSplit: 1,
     matrix: initMatrix(8),
     timeslots: 3,
     maxPerGroup: computeMax(8, 3),
@@ -121,6 +132,7 @@ export default new Vuex.Store({
       const n = computeNumGroups(payload);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
+      state.maxSplit = maxSplit(state.groups);
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(n);
       clearSolution(state);
@@ -130,15 +142,17 @@ export default new Vuex.Store({
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
+      state.maxSplit = maxSplit(state.groups);
       expandMatrix(state.matrix, payload.split);
       clearSolution(state);
     },
     deleteGroup(state, payload) {
-      const split = this.groups[payload].split;
+      const split = state.groups[payload].split;
       state.groups.splice(payload, split);
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
+      state.maxSplit = maxSplit(state.groups);
       resizeMatrix(state.matrix, payload, split)
       clearSolution(state);
     },
@@ -155,6 +169,7 @@ export default new Vuex.Store({
       const n = computeNumGroups(state.groups);
       state.numGroups = n;
       state.maxPerGroup = computeMax(n, state.timeslots);
+      state.maxSplit = maxSplit(state.groups);
     },
     setMatrix(state, payload) {
       Vue.set(state, 'matrix', payload);
