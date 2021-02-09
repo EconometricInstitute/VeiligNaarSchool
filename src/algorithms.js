@@ -1,11 +1,13 @@
 //import utils from './utils.js';
 //import solve_enumerator from './enumerator';
 import solve_localsearch from './localsearch';
+import enumerate from './enumerate2';
 
 function progressCallback(current, total) {
     if (current && total) {
         const ratio = current / total;
-        postMessage({type: 'progress', payload: {state: 'running', progress: ratio, progressMsg: 'Berekenen: '+current+' / '+total}});
+        const format = (100 * ratio).toFixed(1)+'% ('+current+' uit '+total+' mogelijkheden bekeken)';
+        postMessage({type: 'progress', payload: {state: 'running', progress: ratio, progressMsg: format, indeterminate: true}});
     }
     else {
         postMessage({type: 'progress', payload: {state: 'running', progress: 0, progressMsg: 'Berekenen...', indeterminate: true}});
@@ -37,11 +39,28 @@ addEventListener('message', event => {
     //let sol = utils.dummy_solver(data.sizes);
     //callbacks.solution(sol);
     progressCallback(0,1);
-    setTimeout(() => {
+
+    if (data.advanced) {
         let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
         callbacks.solution(sol);
+        console.log(sol);
         finishCallback();
-    }, 1500);
+    
+        if (data.advanced) {
+            const cost_fn = enumerate.matrix_to_cost_fn(data.matrix);
+            sol = enumerate.minimize(data.sizes, cost_fn, callbacks);
+            console.log(sol);
+            finishCallback(true);
+        }    
+    }
+    else {
+        setTimeout(() => {
+            let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
+            callbacks.solution(sol);
+            finishCallback();
+        }, 1500);
+    }
+
     
 
     /*

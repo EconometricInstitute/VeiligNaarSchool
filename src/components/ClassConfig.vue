@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-container>
+    <v-container fluid>
       <v-row>
         <v-col>
           <v-text-field type="number" min="1" :max="max_size" :value="groups.length"
@@ -15,11 +15,11 @@
               <v-btn small color="secondary" @click="quickTool">Snel Aanmaken</v-btn>
               <v-card flat>
                 <v-card-text>
-                  <v-checkbox :label="'Splits klassen'+(splitAll ? ' in:' : '')" v-model="splitAll" @change="val => setSplitAll(val)"/>
+                  <v-checkbox :label="splitBox.length > 2 ? ('Splits klassen'+(splitAll ? ' in:' : '')) : 'Splits klassen'" v-model="splitAll" @change="val => setSplitAll(val)"/>
                 </v-card-text>
               </v-card>
             </v-toolbar-items>
-            <template v-if="splitAll">
+            <template v-if="splitAll && splitBox.length > 2">
               <v-toolbar-items style="margin-left: 1em; margin-right: 1em;">
                 <v-btn v-for="spl in splitBox" :key="spl.value" small @click="()=>massSplit(spl.value)">{{spl.value == '1' ? spl.text : spl.value}}</v-btn>
               </v-toolbar-items>
@@ -33,8 +33,26 @@
           <v-alert type="error">{{error}}</v-alert>
         </v-col>
       </v-row>
-      <v-row class="scroll-row">
-        <v-col>
+ <!--     <v-row class="scroll-row"> -->
+      <v-row>
+        <v-col v-for="(g,idx) in groups" :key="idx">
+          <v-card>
+          <v-container :class="{big: splitAll, small: !splitAll}">
+            <v-row>
+              <v-col class="mw-10" :cols="splitAll ? 7 : 12">
+                <v-text-field label="Naam" :prefix="prefix" :value="g.short" @input="val => updateNaam(idx,val)">
+                  <template v-slot:append-outer>
+                    <v-icon @click.stop="remove(idx)">mdi-delete</v-icon>
+                  </template>
+                </v-text-field>
+              </v-col>
+              <v-col v-if="splitAll" cols="5">
+                    <v-select label="Splits in" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
+              </v-col>
+            </v-row>
+          </v-container>
+          </v-card>
+          <!--
           <v-list >
             <template v-for="(g,idx) in groups">
               <v-list-item :key="idx">
@@ -44,9 +62,6 @@
                 <template v-if="splitAll">
                   &nbsp;
                   <v-list-item-content class="maxw-8" >
-                    <!--
-                    <v-text-field label="Splitsen in" type="number" min="1" :value="g.split" @input="val => updateSplit(idx,val)"/>
-                    -->
                     <v-select label="Splits in" class="mw-6" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
                   </v-list-item-content>
                 </template>
@@ -56,10 +71,11 @@
               </v-list-item>
             </template>
           </v-list>
+          -->
         </v-col>
       </v-row>
     </v-container>
-    <ClassConfigCreateDialog ref="dialog" />
+    <ClassConfigCreateDialog ref="dialog" :defaultSplit="lastSplit" />
     <v-card-actions>
       <v-btn color="primary" :disabled="error != null" @click="next">Volgende</v-btn>
     </v-card-actions>
@@ -178,14 +194,23 @@
 .mw-6 {
   min-width: 6em;
 }
+.mw-8 {
+  min-width: 8em;
+}
 .mw-12 {
   min-width: 12em;
 }
 .mw-16 {
   min-width: 16em;
 }
-.maxw-8 {
-  max-width: 8em;
+.mw-10 {
+  min-width: 10em;
+}
+.big {
+  min-width: 19em;
+}
+.small {
+  min-width: 12em;
 }
 .splitbox {
   /*margin-top: 12px; */

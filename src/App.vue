@@ -12,6 +12,7 @@
           src="./assets/ese-logo-text.png"
           transition="scale-transition"
           width="60"
+          @click="clickAdvanced"
         />
         Verspreid naar School
       </div>
@@ -26,15 +27,20 @@
       <WelcomeDialog ref="welcome"/>
               <input type="file" style="display: none" ref="importFile"
                 accept=".xlsx" @change="processFile" />
+      <v-snackbar :app="true" :top="true" v-model="snackbar">De geadvanceerde modus is nu {{advanced ? 'geactiveerd' : 'gedeactiveerd'}}</v-snackbar>
     </v-main>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import Main from './components/Main';
 import WelcomeDialog from './components/WelcomeDialog';
 import XLSX from 'xlsx';
 import xlsx_io from './xlsx_io';
+
+const CLICK_TIMES = 5;
 
 export default {
   name: 'App',
@@ -49,6 +55,14 @@ export default {
     },
     importData() {
       this.$refs.importFile.click();
+    },
+    clickAdvanced() {
+      this.advancedCountdown--;
+      if (this.advancedCountdown == 0) {
+        this.snackbar = true;
+        this.$store.commit('setAdvanced', !this.advanced);
+        this.advancedCountdown = CLICK_TIMES;
+      }
     },
     processFile(ev) {
         if (ev.target.files[0]) {
@@ -75,8 +89,12 @@ export default {
     }
   },
   data: () => ({
-    //
+    advancedCountdown: CLICK_TIMES,
+    snackbar: false
   }),
+  computed: {
+    ...mapState(['advanced'])
+  }
 };
 </script>
 <style scoped>

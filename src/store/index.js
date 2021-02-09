@@ -234,6 +234,7 @@ export default new Vuex.Store({
       else {
         state.maxPerGroup = maxGroups;
         state.timeslots = computeMax(state.numGroups, maxGroups);
+        state.timeslotNames = computeSlotNames(state.timeslots);
       }
     },
     clearSolution(state) {
@@ -301,7 +302,7 @@ export default new Vuex.Store({
         }
       }
       commit('setWorker', worker);
-      const instance = {matrix: getters.solveMatrix, sizes: getters.division};
+      const instance = {matrix: getters.solveMatrix, sizes: getters.division, advanced: state.advanced};
       worker.postMessage(instance);
     },
     stop({commit}) {

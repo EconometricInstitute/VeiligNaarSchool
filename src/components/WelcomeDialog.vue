@@ -28,11 +28,11 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
-            <v-btn href="handleiding.pdf" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
+          <v-col class="lh-50">
+            <v-btn class="link-btn" href="handleiding.pdf" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
             <!-- <v-btn class="mg-left" href="https://www.youtube.com" target="_blank"><v-icon>mdi-youtube</v-icon>Uitleg Videos</v-btn> -->
-            <v-btn class="mg-left" href="https://www.ese.eur.nl" target="_blank"><v-icon>mdi-school</v-icon>Over ESE</v-btn>
-            <v-btn class="mg-left" href="https://github.com/EconometricInstitute/VerspreidNaarSchool" target="_blank"><v-icon>mdi-github</v-icon>Broncode</v-btn>
+            <v-btn class="link-btn" href="https://www.ese.eur.nl" target="_blank"><v-icon>mdi-school</v-icon>Over ESE</v-btn>
+            <v-btn class="link-btn" href="https://github.com/EconometricInstitute/VerspreidNaarSchool" target="_blank"><v-icon>mdi-github</v-icon>Broncode</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -67,7 +67,10 @@
   }
 </script>
 <style scoped>
-.mg-left {
-  margin-left: 0.8em;
+.link-btn:not(:last-child) {
+  margin-right: 0.8em;
+}
+.lh-50 {
+  line-height: 50px;
 }
 </style>

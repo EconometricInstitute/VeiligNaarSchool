@@ -15,7 +15,7 @@
           <v-col>
             <v-checkbox v-model="merge" label="Combineer lege jaargangen" />
             Met deze optie worden jaargangen met nul klassen gecombineerd met de lagere jaren. Als u bijvoorbeeld
-            een gecombineerde jaargang 1/2 heeft met drie klassen, vul u 3 in bij groep 1, en 0 bij groep 2.
+            een gecombineerde jaargang 1/2 heeft met drie klassen, vult u 3 in bij groep 1, en 0 bij groep 2.
           </v-col>
         </v-row>
         <v-row>
@@ -44,6 +44,7 @@
 
   export default {
     name: 'ClassConfigCreateDialog',
+    props: ['defaultSplit'],
     methods: {
       show() {
         this.visible = true;
@@ -62,12 +63,12 @@
             if (count != 0) {
               const name = buffer.reverse().join('/');
               if (count == 1) {
-                groups.push({short: name, full: PREFIX+name, split: 1});
+                groups.push({short: name, full: PREFIX+name, split: this.defaultSplit});
               }
               else {
                 for (let j=0; j < count; j++) {
                   const short = name + label(count - j - 1);
-                  groups.push({short, full: PREFIX+short, split: 1});
+                  groups.push({short, full: PREFIX+short, split: this.defaultSplit});
                 }
               }
               buffer = [];
@@ -81,12 +82,12 @@
             if (Number.isInteger(count) && count > 0 ) {
               if (count == 1) {
                   const short = ''+(i+1);
-                  groups.push({short, full: PREFIX+short, split: 1});
+                  groups.push({short, full: PREFIX+short, split: this.defaultSplit});
               }
               else {
                 for (let j=0; j < count; j++) {
                   const short = ''+(i+1)+label(j);
-                  groups.push({short, full: PREFIX+short, split: 1});
+                  groups.push({short, full: PREFIX+short, split: this.defaultSplit});
                 }
               }
             }

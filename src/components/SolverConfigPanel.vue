@@ -3,14 +3,19 @@
     <v-card-text>
       <v-container>
         <v-row>
-          <v-col><h3>Instelling</h3></v-col>
+          <v-col>
+            <h3>Instelling</h3>
+            <v-alert type="info" v-if="parseInt(maxSplit) > 1">
+              Het is niet mogelijk het aantal tijdslots aan te passen bij het splitsen van klassen.
+            </v-alert>
+          </v-col>
         </v-row>
         <v-row>
           <v-col cols="6">
-            <v-text-field label="Aantal Tijdsloten" :value="timeslots" @input="setSlots" type="number" :min="maxSplit" />
+            <v-text-field :disabled="parseInt(maxSplit) > 1" label="Aantal Tijdsloten" :value="timeslots" @input="setSlots" type="number" :min="maxSplit" />
           </v-col>
           <v-col cols="6">
-            <v-text-field label="Maximum aantal groepen per tijdslot" :value="maxPerGroup" @input="setMax" type="number" min="1" />
+            <v-text-field :disabled="parseInt(maxSplit) > 1" label="Maximum aantal groepen per tijdslot" :value="maxPerGroup" @input="setMax" type="number" min="1" />
           </v-col>
         </v-row>
         <v-row>

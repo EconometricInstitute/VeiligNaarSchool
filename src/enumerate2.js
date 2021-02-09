@@ -76,9 +76,10 @@ function minimize(parts, cost_fn, callbacks, bound, cb_rate) {
         bound = Number.POSITIVE_INFINITY;
     }
     if (cb_rate == undefined) {
-        cb_rate = 1e6;
+        cb_rate = 25000;
     }
     let best = undefined;
+    console.log(parts);
     const n = parts.reduce((a,b) => parseInt(a)+parseInt(b), 0);
     const remain = [...Array(n).keys()];
     const total = count_combinations(parts);
@@ -135,4 +136,6 @@ function test() {
     console.log((toc - tic + 0.0) / 1000 + " seconds");
 }
 
-test();
+//test();
+
+export default {minimize, matrix_to_cost_fn, test};
