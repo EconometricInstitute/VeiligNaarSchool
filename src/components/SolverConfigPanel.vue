@@ -7,10 +7,10 @@
         </v-row>
         <v-row>
           <v-col cols="6">
-            <v-text-field label="Aantal Tijdsloten" :value="timeslots" @input="setSlots" type="number" :min="maxSplit" />
+            <v-text-field label="Aantal Tijdsloten" :disabled="maxSplit > 0" :value="timeslots" @input="setSlots" type="number" :min="maxSplit" />
           </v-col>
           <v-col cols="6">
-            <v-text-field label="Maximum aantal groepen per tijdslot" :value="maxPerGroup" @input="setMax" type="number" min="1" />
+            <v-text-field label="Maximum aantal groepen per tijdslot" :disabled="maxSplit > 0" :value="maxPerGroup" @input="setMax" type="number" min="1" />
           </v-col>
         </v-row>
         <v-row>

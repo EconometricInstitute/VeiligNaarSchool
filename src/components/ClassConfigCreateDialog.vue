@@ -8,7 +8,14 @@
         <v-row>
           <v-col>
             Vul in hoeveel klassen voor elke jaargang moeten worden aangemaakt. Het is ook mogelijk om 0 in
-            te vullen. U kunt na deze stap de namen van klassen nog aanpassen.
+            te vullen. U kunt de namen van de groepen nog wijzigen na afloop.
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-checkbox v-model="merge" label="Combineer lege jaargangen" />
+            Met deze optie worden jaargangen met nul klassen gecombineerd met de lagere jaren. Als u bijvoorbeeld
+            een gecombineerde jaargang 1/2 heeft met drie klassen, vul u 3 in bij groep 1, en 0 bij groep 2.
           </v-col>
         </v-row>
         <v-row>
@@ -45,18 +52,42 @@
         this.visible = false;
       },
       create() {
-        const groups = [];
-        for (let i=0; i < this.years; i++) {
-          const count = parseInt(this.counts[i]);
-          if (Number.isInteger(count) && count > 0 ) {
-            if (count == 1) {
-                const short = ''+(i+1);
-                groups.push({short, full: PREFIX+short, split: 1});
+        let groups = [];
+        if (this.merge) {
+          let buffer = [];
+          for (let i=0; i < this.years; i++) {
+            const y = this.years - i;
+            buffer.push(y);
+            const count = this.counts[y-1];
+            if (count != 0) {
+              const name = buffer.reverse().join('/');
+              if (count == 1) {
+                groups.push({short: name, full: PREFIX+name, split: 1});
+              }
+              else {
+                for (let j=0; j < count; j++) {
+                  const short = name + label(count - j - 1);
+                  groups.push({short, full: PREFIX+short, split: 1});
+                }
+              }
+              buffer = [];
             }
-            else {
-              for (let j=0; j < count; j++) {
-                const short = ''+(i+1)+label(j);
-                groups.push({short, full: PREFIX+short, split: 1});
+          }
+          groups = groups.reverse();
+        }
+        else {
+          for (let i=0; i < this.years; i++) {
+            const count = parseInt(this.counts[i]);
+            if (Number.isInteger(count) && count > 0 ) {
+              if (count == 1) {
+                  const short = ''+(i+1);
+                  groups.push({short, full: PREFIX+short, split: 1});
+              }
+              else {
+                for (let j=0; j < count; j++) {
+                  const short = ''+(i+1)+label(j);
+                  groups.push({short, full: PREFIX+short, split: 1});
+                }
               }
             }
           }
@@ -68,9 +99,13 @@
     data: () => ({
       visible: false,
       years: NUMBER_OF_YEARS,
+      merge: true,
       prefix: PREFIX,
       counts: Array(NUMBER_OF_YEARS).fill(1)
     }),
+    created() {
+      this.counts[1] = 0;
+    }
   }
 </script>
 <style scoped>

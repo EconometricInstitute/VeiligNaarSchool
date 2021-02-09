@@ -60,7 +60,7 @@ function evaluate(group, classes, combination, matrix, state, callbacks)
     const sizes = state.sizes;
     // I aim to find the set classes - combination, but this is not trivial. I use a boolean array for that,
     // which might be inefficient.
-    const present = Array(nClasses).map(() => false);
+    const present = Array(nClasses).fill(false);
     for(let i = 0 ; i < nClasses; i++)
     {
         present[i] = false;

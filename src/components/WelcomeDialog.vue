@@ -19,14 +19,18 @@
         </v-row>
         <v-row>
           <v-col>
-            Deze tool is een initiatief van Paul Bouman, Twan Dollevoet, Wilco van den Heuvel en Remy Spliet, onderzoekers aan
-            de Erasmus Universiteit Rotterdam.
+            Deze tool is een initiatief van
+            <a href="https://www.eur.nl/people/paul-bouman" target="_blank">Paul Bouman</a>,
+            <a href="https://www.eur.nl/people/twan-dollevoet" target="_blank">Twan Dollevoet</a>,
+            <a href="https://www.eur.nl/people/wilco-van-den-heuvel" target="_blank">Wilco van den Heuvel</a> en
+            <a href="https://www.eur.nl/people/remy-spliet" target="_blank">Remy Spliet</a>, onderzoekers aan
+            de Erasmus School of Economics van Erasmus Universiteit Rotterdam.
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn href="https://www.eur.nl" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
-            <v-btn class="mg-left" href="https://www.youtube.com" target="_blank"><v-icon>mdi-youtube</v-icon>Uitleg Videos</v-btn>
+            <v-btn href="handleiding.pdf" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
+            <!-- <v-btn class="mg-left" href="https://www.youtube.com" target="_blank"><v-icon>mdi-youtube</v-icon>Uitleg Videos</v-btn> -->
             <v-btn class="mg-left" href="https://www.ese.eur.nl" target="_blank"><v-icon>mdi-school</v-icon>Over ESE</v-btn>
             <v-btn class="mg-left" href="https://github.com/EconometricInstitute/VerspreidNaarSchool" target="_blank"><v-icon>mdi-github</v-icon>Broncode</v-btn>
           </v-col>

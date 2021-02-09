@@ -72,7 +72,7 @@
   import ClassConfigCreateDialog from './ClassConfigCreateDialog';
 
   const MAX_SIZE = 60;
-  const MAX_SPLIT = 4;
+  const MAX_SPLIT = 2;
 
   export default {
     name: 'ClassConfig',
@@ -146,6 +146,9 @@
           }
           for (const idx of this.groups.keys()) {
             this.updateSplit(idx, count);
+          }
+          if (count > 1) {
+            this.$store.commit('setSlots', count);
           }
         }
       },
