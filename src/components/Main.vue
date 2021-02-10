@@ -3,11 +3,11 @@
     <v-stepper v-model="step" vertical non-linear>
       <v-stepper-step editable :complete="step > 1" step="1">Invoeren Klassen</v-stepper-step>
       <v-stepper-content step="1">
-        <ClassConfig @next="step++" ref="classConfig"/>
+        <ClassConfig v-if="step==1" @next="step++" ref="classConfig"/>
       </v-stepper-content>
       <v-stepper-step :complete="step > 2" :editable="step > 2" step="2">Invoeren Overlap</v-stepper-step>
       <v-stepper-content step="2">
-        <Overlap @next="step++" />
+          <Overlap v-if="step==2" @next="step++" />
       </v-stepper-content>
       <!--
       <v-stepper-step :complete="step > 3" :editable="step > 3" step="3">Berekenen Verdeling</v-stepper-step>
@@ -17,7 +17,7 @@
       -->
       <v-stepper-step step="3">Maak Verdeling</v-stepper-step>
       <v-stepper-content step="3">
-        <SolutionView />
+        <SolutionView v-if="step==3"/>
       </v-stepper-content>
     </v-stepper>
   </v-container>

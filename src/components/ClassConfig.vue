@@ -3,6 +3,15 @@
     <v-container fluid>
       <v-row>
         <v-col>
+          <v-alert type="info">
+            In deze stap geeft u aan hoeveel klassen uw school heeft en hoe de klassen heten.
+            Als u klassen wilt splitsen over verschillende dagen, dient u de optie "Splits klassen" aan te zetten.
+            Als u gehele klassen wilt verdelen over verschillende starttijden laat u deze optie uit staan.
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <v-text-field type="number" min="1" :max="max_size" :value="groups.length"
             @input="setGroups" label="Aantal klassen" />
         </v-col>
@@ -35,23 +44,28 @@
       </v-row>
  <!--     <v-row class="scroll-row"> -->
       <v-row>
-        <v-col v-for="(g,idx) in groups" :key="idx">
-          <v-card>
-          <v-container :class="{big: splitAll, small: !splitAll}">
-            <v-row>
-              <v-col class="mw-10" :cols="splitAll ? 7 : 12">
-                <v-text-field label="Naam" :prefix="prefix" :value="g.short" @input="val => updateNaam(idx,val)">
+        <v-col class="d-flex flex-row flex-wrap">
+          <div v-for="(g,idx) in groups" :key="idx" style="padding: 5px;">
+            <v-card class="d-flex flex-row" style="padding: 0 5px 0 5px;">
+                <v-text-field style="width: 12em" label="Naam" :prefix="prefix" :value="g.short" @input="val => updateNaam(idx,val)">
                   <template v-slot:append-outer>
                     <v-icon @click.stop="remove(idx)">mdi-delete</v-icon>
                   </template>
                 </v-text-field>
+                <v-select v-if="splitAll" style="width: 5em" :label="splitBox.length != 2 ? 'Splits in' : 'Splitsen?'" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
+            </v-card>
+<!--
+          <v-card>
+          <v-container>
+            <v-row>
+              <v-col>
               </v-col>
-              <v-col v-if="splitAll" cols="5">
-                    <v-select label="Splits in" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
+              <v-col v-if="splitAll">
               </v-col>
             </v-row>
           </v-container>
           </v-card>
+-->
           <!--
           <v-list >
             <template v-for="(g,idx) in groups">
@@ -72,6 +86,7 @@
             </template>
           </v-list>
           -->
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -166,6 +181,9 @@
           if (count > 1) {
             this.$store.commit('setSlots', count);
           }
+          else {
+            this.$store.commit('setSlots', 3);
+          }
         }
       },
       updateNaam(idx, val) {
@@ -181,6 +199,9 @@
     computed: {
       ...mapState(['groups', 'maxSplit']),
       splitBox() {
+        if (MAX_SPLIT == 2){
+          return [{value: 2, text: 'Ja'}, {value: 1, text: 'Nee'}];
+        }
         const result = [{value: 1, text: 'Niet splitsen', disabled: false}];
         for (let i=2; i <= MAX_SPLIT; i++) {
           result.push({value: i, text: ''+i+' delen', disabled: false});

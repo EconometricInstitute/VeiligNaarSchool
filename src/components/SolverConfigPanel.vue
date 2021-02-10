@@ -22,8 +22,10 @@
           <v-col><h4>Namen van Tijdsloten</h4></v-col>
         </v-row>
         <v-row>
-          <v-col v-for="ts in timeslots" :key="ts">
-            <v-text-field :value="timeslotNames[ts-1]" @input="val => setName(ts-1, val)" />
+          <v-col>
+            <div class="d-flex flex-row flex-wrap" style="padding: 5px;">
+            <v-text-field v-for="ts in timeslots" :key="ts" class="flex-grow-0" style="margin: 5px;"  :value="timeslotNames[ts-1]" @input="val => setName(ts-1, val)" />
+            </div>
           </v-col>
         </v-row>
       </v-container>

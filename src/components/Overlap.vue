@@ -1,5 +1,11 @@
 <template>
   <v-card>
+    <v-alert type="info">
+      In deze stap geeft u aan hoeveel overlap er is tussen de ouders/verzorgers 
+      van kinderen in paren van klassen. 
+      Een getal groter dan nul drukt de wens een paar klassen op hetzelfde
+      tijdstip te plannen uit.
+    </v-alert>
     <v-simple-table dense height="50vh">
       <thead>
         <tr>

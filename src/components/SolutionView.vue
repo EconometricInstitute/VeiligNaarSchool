@@ -1,5 +1,9 @@
 <template>
   <v-card>
+    <v-alert type="info">
+      In deze stap kunt u de tijdsloten aanpassen en wordt een verdeling berekend.
+      U kunt de gevonden verdeling bekijken of exporteren naar een Excel bestand.
+    </v-alert>
     <SolverConfigPanel :autoSolve="true" />
     <v-alert v-if="solverState.state == 'error'" type="error">
       Er is een probleem met de invoer. <br /> {{solverState.progressMsg}}
