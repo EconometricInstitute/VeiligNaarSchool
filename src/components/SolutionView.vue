@@ -12,9 +12,12 @@
       <template v-slot:prepend>
         <v-progress-circular :value="solverState.progress" :indeterminate="solverState.indeterminate" class="progress" />
       </template>
-      Er wordt op dit moment nog gezocht naar een betere verdeling. De onderstaande verdeling kan nog veranderen.<br />
+      Er is een goede verdeling gevonden. </br>
+      De resterende overlap van de huidige verdeling is {{solutionQuality.cost}} van in totaal {{solutionQuality.total}} overlap.</br>
+      We controleren nu nog even alle mogelijke verdelingen om te zien of we geen betere verdeling over het hoofd hebben gezien. </br>
+      Als we een betere verdeling vinden, geven we die hieronder weer.<br />
       <span v-if="solutionQuality">
-        De resterende overlap van de huidige verdeling is {{solutionQuality.cost}} van in totaal {{solutionQuality.total}} overlap.
+        
       </span>
       <template v-if="solverState.progressMsg">
         <br />Voortgang van het zoekproces: {{solverState.progressMsg}}
