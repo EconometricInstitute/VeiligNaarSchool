@@ -39,39 +39,20 @@ addEventListener('message', event => {
     //let sol = utils.dummy_solver(data.sizes);
     //callbacks.solution(sol);
     progressCallback(0,1);
+    let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
+    callbacks.solution(sol);
+    console.log(sol);
+    finishCallback();
+    const cost_fn = enumerate.matrix_to_cost_fn(data.matrix);
+    sol = enumerate.minimize(data.sizes, cost_fn, callbacks);
+    console.log(sol);
+    finishCallback(true);
 
-    if (data.advanced) {
-        let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
-        callbacks.solution(sol);
-        console.log(sol);
-        finishCallback();
+    // Old timeout based code
     
-        if (data.advanced) {
-            const cost_fn = enumerate.matrix_to_cost_fn(data.matrix);
-            sol = enumerate.minimize(data.sizes, cost_fn, callbacks);
-            console.log(sol);
-            finishCallback(true);
-        }    
-    }
-    else {
-        setTimeout(() => {
-            let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
-            callbacks.solution(sol);
-            finishCallback();
-        }, 1500);
-    }
-
-    
-
-    /*
-    const nCombs = utils.compute_combinations(data.sizes);
-    const quality = utils.compute_conflicts(sol, data.matrix);
-    if (quality.cost > 0) {
-        console.log('Running Enumerator');
-        const ub = quality.honored;
-        //solve_enumerator(data.matrix, data.sizes, ub, nCombs, callbacks);
-        console.log('Enumerator done.');
-    } 
-    */   
-    //finishCallback(true);
+    // setTimeout(() => {
+    //     let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
+    //     callbacks.solution(sol);
+    //     finishCallback();
+    // }, 1500);
 });
