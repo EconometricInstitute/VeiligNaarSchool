@@ -7,7 +7,7 @@ function progressCallback(current, total) {
     if (current && total) {
         const ratio = current / total;
         const format = (100 * ratio).toFixed(1)+'% ('+current+' uit '+total+' mogelijkheden bekeken)';
-        postMessage({type: 'progress', payload: {state: 'running', progress: ratio, progressMsg: format, indeterminate: true}});
+        postMessage({type: 'progress', payload: {state: 'running', progress: ratio, current, total, progressMsg: format, indeterminate: true}});
     }
     else {
         postMessage({type: 'progress', payload: {state: 'running', progress: 0, progressMsg: 'Berekenen...', indeterminate: true}});

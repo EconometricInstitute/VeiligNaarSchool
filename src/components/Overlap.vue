@@ -3,34 +3,12 @@
     <v-alert type="info">
       In deze stap geeft u aan hoeveel overlap er is tussen de ouders/verzorgers 
       van kinderen in paren van klassen. 
-      Een getal groter dan nul drukt de wens een paar klassen op hetzelfde
-      tijdstip te plannen uit.
+      De overlap geeft aan hoe vervelend het is als een paar van klassen op verschillende tijden wordt gepland.
+      <br />
+      Voorbeeld: als zes kinderen in groep 5 een broertje of zusje hebben in groep 3, vul dan 6 in voor het paar
+      groep 5 en groep 3.
     </v-alert>
-    <v-simple-table dense height="50vh">
-      <thead>
-        <tr>
-          <th>{{PREFIX}}</th>
-          <template v-for="g of groupView">
-            <th :key="g.short">{{g.short}}</th>
-          </template>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-for="(g,row) in groupView">
-          <tr :key="'r'+g.short" >
-            <th class="mw-10" scope="row">{{g.short}}</th>
-            <template v-for="(c,col) in groupView">
-              <td v-if="g.originalIndex == c.originalIndex" :key="g.short+'-'+c.short" />
-              <td v-else :key="g.short+'-'+c.short" class="inputcell" :class="{upper: col > row, lower: col < row}">
-                <v-text-field type="number" v-if="col != row" min="0"
-                  :class="{upper: col > row, lower: col < row}"
-                  :value="matrix[row][col]" @input="val => setOverlap(row, col, val)" />
-              </td>
-            </template>
-          </tr>
-        </template>
-      </tbody>
-    </v-simple-table>
+    <OverlapTable />
     <v-card-actions>
       <v-btn color="primary" @click="next">Volgende</v-btn>
       <v-btn color="primary" @click="exportData">Exporteer</v-btn>
@@ -43,9 +21,13 @@
   import { PREFIX } from '../parameters'
   import { mapState, mapGetters } from 'vuex';
   import xlsx_io from '../xlsx_io';
+  import OverlapTable from './OverlapTable';
 
   export default {
     name: 'Overlap',
+    components: {
+      OverlapTable
+    },
     methods: {
       next() {
         this.$store.dispatch('solve');
@@ -53,9 +35,6 @@
       },
       exportData() {
         xlsx_io.writeSheet(this.groupView, this.groups, this.matrix, 'overlap-sheet.xlsx');
-      },
-      setOverlap(row, col, value) {
-        this.$store.commit('setOverlap', {row, col, value});
       },
       randomize() {
         for(let i=0; i < this.groupView.length; i++) {
