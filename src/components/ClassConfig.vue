@@ -5,36 +5,23 @@
         <v-col>
           <v-alert type="info">
             In deze stap geeft u aan hoeveel klassen uw school heeft en hoe de klassen heten.
-            Als u klassen wilt splitsen over verschillende dagen, dient u de optie "Splits klassen" aan te zetten.
-            Als u gehele klassen wilt verdelen over verschillende starttijden laat u deze optie uit staan.
+<!--            Als u klassen wilt splitsen over verschillende dagen, dient u de optie "Splits klassen" aan te zetten.
+            Als u gehele klassen wilt verdelen over verschillende starttijden laat u deze optie uit staan.            
+          -->
           </v-alert>
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-          <v-text-field type="number" min="1" :max="max_size" :value="groups.length"
-            @input="setGroups" label="Aantal klassen" />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-toolbar dense flat>
-            <v-toolbar-items>
-              <v-btn small color="primary" @click="addGroup">Voeg klas toe</v-btn>
-              <v-btn small color="secondary" @click="quickTool">Snel Aanmaken</v-btn>
-              <v-card flat>
-                <v-card-text>
-                  <v-checkbox :label="splitBox.length > 2 ? ('Splits klassen'+(splitAll ? ' in:' : '')) : 'Splits klassen'" v-model="splitAll" @change="val => setSplitAll(val)"/>
-                </v-card-text>
-              </v-card>
-            </v-toolbar-items>
-            <template v-if="splitAll && splitBox.length > 2">
-              <v-toolbar-items style="margin-left: 1em; margin-right: 1em;">
-                <v-btn v-for="spl in splitBox" :key="spl.value" small @click="()=>massSplit(spl.value)">{{spl.value == '1' ? spl.text : spl.value}}</v-btn>
-              </v-toolbar-items>
-            </template>
-            <v-spacer />
-          </v-toolbar>
+        <v-col class="d-flex flex-col">
+              <v-text-field type="number" min="1" :max="max_size" :value="groups.length"
+                @input="setGroups" label="Aantal klassen" style="max-width: 12em;"/>
+              <v-toolbar dense flat class="flex-grow-0">
+                <v-toolbar-items>
+                  <v-btn small color="secondary" @click="quickTool">Snel Aanmaken</v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+
+              <v-checkbox :label="splitBox.length > 2 ? ('Splits klassen'+(splitAll ? ' in:' : '')) : 'Splits klassen'" v-model="splitAll" @change="val => setSplitAll(val)"/>
         </v-col>
       </v-row>
       <v-row>

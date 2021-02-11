@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="visible" max-width="60em">
+  <v-dialog v-model="visible" max-width="60em" overlay-color="#ffd500" overlay-opacity="1">
     <v-card>
     <v-card-title>Verspreid naar school</v-card-title>
     <v-card-text>
