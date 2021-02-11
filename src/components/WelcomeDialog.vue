@@ -29,8 +29,9 @@
         </v-row>
         <v-row>
           <v-col class="lh-50">
-            <v-btn class="link-btn" href="handleiding.pdf" target="_blank"><v-icon>mdi-book</v-icon> Handleiding</v-btn>
-            <!-- <v-btn class="mg-left" href="https://www.youtube.com" target="_blank"><v-icon>mdi-youtube</v-icon>Uitleg Videos</v-btn> -->
+            <v-btn class="link-btn" href="handleiding.pdf" target="_blank"><v-icon>mdi-help-circle</v-icon> Handleiding</v-btn>
+            <v-btn class="link-btn" href="https://eur.cloud.panopto.eu/Panopto/Pages/Sessions/List.aspx?folderID=1debd283-7a52-42aa-8e1b-accc00e67abb" target="_blank"><v-icon>mdi-filmstrip</v-icon>Instructievideos</v-btn>
+            <v-btn class="link-btn" href="mailto:verspreidnaarschool@ese.eur.nl" target="_blank"><v-icon>mdi-email</v-icon>E-mail ons</v-btn>
             <v-btn class="link-btn" href="https://www.ese.eur.nl" target="_blank"><v-icon>mdi-school</v-icon>Over ESE</v-btn>
             <v-btn class="link-btn" href="https://github.com/EconometricInstitute/VerspreidNaarSchool" target="_blank"><v-icon>mdi-github</v-icon>Broncode</v-btn>
           </v-col>
