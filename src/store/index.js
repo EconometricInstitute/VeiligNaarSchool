@@ -129,9 +129,19 @@ function computeSlotNames(count) {
   return result;
 }
 
+function updateGroupSize(state) {
+  const n = computeNumGroups(state.groups);
+  state.numGroups = n;
+  state.maxPerGroup = computeMax(n, state.timeslots);
+  state.maxSplit = maxSplit(state.groups);
+  state.timeslots = Math.max(state.timeslots, state.maxSplit);
+  return n;
+}
+
 export default new Vuex.Store({
   state: {
     groups: generateGroups(8),
+    groupBuffer: [],
     numGroups: 8,
     maxSplit: 1,
     matrix: initMatrix(8),
@@ -148,22 +158,14 @@ export default new Vuex.Store({
     setGroups(state, payload) {
       clearSolution(state);
       state.groups = [...payload];
-      const n = computeNumGroups(payload);
-      state.numGroups = n;
-      state.maxPerGroup = computeMax(n, state.timeslots);
-      state.maxSplit = maxSplit(state.groups);
-      state.timeslots = Math.max(state.timeslots, state.maxSplit);
+      const n = updateGroupSize(state)
       // TODO: it could be nicer to trim/extend the current matrix...?
       state.matrix = initMatrix(n);
     },
     addGroup(state, payload) {
       clearSolution(state);
       state.groups.push(payload);
-      const n = computeNumGroups(state.groups);
-      state.numGroups = n;
-      state.maxPerGroup = computeMax(n, state.timeslots);
-      state.maxSplit = maxSplit(state.groups);
-      state.timeslots = Math.max(state.timeslots, state.maxSplit);
+      updateGroupSize(state)
       expandMatrix(state.matrix, payload.split);
     },
     deleteGroup(state, payload) {
@@ -171,11 +173,28 @@ export default new Vuex.Store({
       const split = state.groups[payload].split;
       const splitIdx = computeMatrixIndex(payload, state.groups);
       state.groups.splice(payload, 1);
-      const n = computeNumGroups(state.groups);
-      state.numGroups = n;
-      state.maxPerGroup = computeMax(n, state.timeslots);
-      state.maxSplit = maxSplit(state.groups);
+      updateGroupSize(state)
       resizeMatrix(state.matrix, splitIdx, split)
+    },
+    incrementGroups(state, payload) {
+      if (state.groupBuffer.length > 0) {
+        state.groups.push(state.groupBuffer.pop());
+      }
+      else {
+        const n = state.groups.length+1;
+        state.groups.push({short: ''+n, full: PREFIX+n, split: payload});
+      }
+      updateGroupSize(state);
+      expandMatrix(state.matrix, payload);
+    },
+    decrementGroups(state) {
+      const groups = state.groups;
+      if (groups.length > 0) {
+        const currentSplit = groups[groups.length-1].split;
+        state.groupBuffer.push(state.groups.pop());
+        updateGroupSize(state);
+        resizeMatrix(state.matrix.length-currentSplit, -currentSplit);
+      }      
     },
     updateGroupName(state, payload) {
       const grp = state.groups[payload.index];
@@ -286,7 +305,8 @@ export default new Vuex.Store({
       //, state.timeslots < state.maxSplit , state.maxPerGroup < 1
       //, state.timeslots * state.maxPerGroup < state.groupCount);
 
-      const worker = new Worker('../algorithms.js', { type: 'module' });
+      //const worker = new Worker('../algorithms.js', { type: 'module' });
+      const worker = new Worker('../solver-worker.js', { type: 'module' });
       worker.onmessage = event => {
         const data = event.data;
         const type = data.type;
@@ -302,7 +322,7 @@ export default new Vuex.Store({
         }
       }
       commit('setWorker', worker);
-      const instance = {matrix: getters.solveMatrix, sizes: getters.division, advanced: state.advanced};
+      const instance = {matrix: getters.solveMatrix, parts: getters.division, advanced: state.advanced};
       worker.postMessage(instance);
     },
     stop({commit}) {

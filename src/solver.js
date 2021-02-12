@@ -30,39 +30,55 @@ class SolverService {
     }
 
     solution(solution) {
-        if (this.validate && !validate(solution)) {
-            this.warn(`Algorithm ${this.currentAlgorithm} produced an invalid solution. It was rejected.`, solution);
+        const instance = this.currentInstance;
+        const minimize = this.minimize;
+        if (this.validate && !this.validate(solution, instance)) {
+            this.warn(`Algorithm ${this.currentAlgorithm} produced an invalid solution. It was rejected.`, solution, instance);
             return;
         }
         if (this.objective) {
-            
+            const objVal = this.objective(solution, instance);
+            if (!this.bestValue || (minimize && objVal < this.bestValue) || (!minimize && objVal > this.bestValue)) {
+                this.bestValue = objVal;
+                this.bestSolution = solution;
+                if (minimize) {
+                    this.upperBound = objVal;
+                }
+                else {
+                    this.lowerBound = objVal;
+                }
+                // TODO: perform optimality detection?
+            }
         }
         postMessage({type: 'solution', payload: solution, algorithm: this.currentAlgorithm});
     }
 
     reset() {
+        this.currentInstance = null;
         this.bestSolution = null;
         this.bestValue = null;
         this.lowerBound = null;
         this.upperBound = null;
         this.optimal = false;
-        this.logging = logging;
     }
 
     log(...msg) {
         if (this.logging) {
-            console.log(...msg);
+            console.log('%c[SolverService]','font-weight: bold; background-color: #cccccc',...msg);
         }
     }
 
     warn(...msg) {
         if (this.logging) {
-            console.warn(msg);
+            console.warn('%c[SolverService]%c WARNING','font-weight: bold; background-color: #cccccc', 'font-weight: bolder; color: orange;', msg);
         }
     }
 
     solve(instance) {
+        this.log('------ START SOLVING ------');
+        this.log('Received instance for solving', instance);
         this.reset();
+        this.currentInstance = instance;
         for (let algorithm of this.algorithms) {
             const start = Date.now();
             if (algorithm.eligable && !algorithm.eligable(instance)) {
@@ -72,18 +88,29 @@ class SolverService {
             this.currentAlgorithm = algorithm.name;
             this.log(`Running algorithm ${algorithm.name}`);
             this.progress();
-            algorithm.run(instance, this);
-            this.currentAlgorithm = null;
-            const end = Date.end();
-            const seconds = (end-start)/1000;
-            this.log(`Algorithm ${algorithm.name} finished running after ${seconds} seconds`);
-            if (this.optimal) {
-                this.log(`Optimal solution found. No more algorithms will be executed`)
-                return;
+            try {
+                algorithm.run(instance, this);
+                this.currentAlgorithm = null;
+                const end = Date.now();
+                const seconds = (end-start)/1000;
+                this.log(`Algorithm ${algorithm.name} finished running after ${seconds} seconds`);
+                if (this.optimal) {
+                    this.log(`Optimal solution found. No more algorithms will be executed`)
+                    this.log('------ END SOLVING ------');
+                    return;
+                }
+            }
+            catch (err) {
+                this.warn(`Algorithm ${algorithm.name} did not run successfully. ${err.name} - ${err.message}`);
+                this.warn(err);
             }
         }
+        this.log('No more algorithms to run, but no (proven) optimal solution was found.')
+        this.log('------  END SOLVING  ------');
     }
 }
+
+export default SolverService;
 
 /*
 addEventListener('message', event => {

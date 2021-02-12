@@ -1,17 +1,34 @@
 // TODO: make this count_combinations?
-function compute_combinations(sizes) {
-    let n = sizes.reduce((a,b) => a+b, 0);
-    let nCombs = 1.0;
-    for(let i = 0; i < sizes.length; i++)
+function count_combinations(parts) {
+    let result = 1;
+    let n = parts.reduce((a,b) => parseInt(a)+parseInt(b), 0);
+    for(let i = 0; i < parts.length; i++)
     {
-        for(let j = 1; j <= sizes.length; j++)
+        for(let j = 1; j <= parts[i]; j++)
         {
-            nCombs *= n;
-            nCombs /= j;
+            result *= n;
+            result /= j;
             n--;
         }
     }
-    return nCombs;
+    return result;
+}
+
+function* combinations(n, k) {
+    // Based on https://github.com/exromany/combinations-generator, but heavily modified
+    const keys = Array(k).fill(-1);
+    let i = 0;
+    while (i >= 0) {
+        if (keys[i] < n - (k - i)) {
+            for (let key=keys[i] - i + 1; i < k; i++) {
+                keys[i] = key + i;
+            }
+            yield keys;
+        }
+        else {
+            i--;
+        }
+    }
 }
 
 function dummy_solver(sizes) {
@@ -23,6 +40,19 @@ function dummy_solver(sizes) {
             result.push(cur);
         }
         cur++;
+    }
+    return result;
+}
+
+function compute_lb(matrix) {
+    let result = 0;
+    for (let i=0; i < matrix.length; i++) {
+        for (let j=i+1; j < matrix.length; j++) {
+            const entry = matrix[i][j];
+            if (entry < 0) {
+                result += matrix[i][j]
+            }
+        }
     }
     return result;
 }
@@ -75,7 +105,9 @@ function get_url_param(param) {
   }
 
 export default {dummy_solver,
+                compute_lb,
                 compute_conflicts,
-                compute_combinations,
+                count_combinations,
+                combinations,
                 compute_groupview,
                 get_url_param};

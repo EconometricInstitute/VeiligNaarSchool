@@ -3,7 +3,7 @@
     <v-stepper v-model="step" vertical non-linear>
       <v-stepper-step editable :complete="step > 1" step="1">Invoeren Klassen</v-stepper-step>
       <v-stepper-content step="1">
-        <ClassConfig v-if="step==1" @next="step++" ref="classConfig"/>
+        <ClassConfig @next="step++" ref="classConfig"/>
       </v-stepper-content>
       <v-stepper-step :complete="step > 2" :editable="step > 2" step="2">Invoeren Overlap</v-stepper-step>
       <v-stepper-content step="2">

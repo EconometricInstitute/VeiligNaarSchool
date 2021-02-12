@@ -12,7 +12,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="d-flex flex-col">
+        <v-col class="d-flex flex-row">
               <v-text-field type="number" min="1" :max="max_size" :value="groups.length"
                 @input="setGroups" label="Aantal klassen" style="max-width: 12em;"/>
               <v-toolbar dense flat class="flex-grow-0">
@@ -20,7 +20,6 @@
                   <v-btn small color="secondary" @click="quickTool">Snel Aanmaken</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
-
               <v-checkbox :label="splitBox.length > 2 ? ('Splits klassen'+(splitAll ? ' in:' : '')) : 'Splits klassen'" v-model="splitAll" @change="val => setSplitAll(val)"/>
         </v-col>
       </v-row>
@@ -29,7 +28,6 @@
           <v-alert type="error">{{error}}</v-alert>
         </v-col>
       </v-row>
- <!--     <v-row class="scroll-row"> -->
       <v-row>
         <v-col class="d-flex flex-row flex-wrap">
           <div v-for="(g,idx) in groups" :key="idx" style="padding: 5px;">
@@ -41,38 +39,6 @@
                 </v-text-field>
                 <v-select v-if="splitAll" style="width: 5em" :label="splitBox.length != 2 ? 'Splits in' : 'Splitsen?'" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
             </v-card>
-<!--
-          <v-card>
-          <v-container>
-            <v-row>
-              <v-col>
-              </v-col>
-              <v-col v-if="splitAll">
-              </v-col>
-            </v-row>
-          </v-container>
-          </v-card>
--->
-          <!--
-          <v-list >
-            <template v-for="(g,idx) in groups">
-              <v-list-item :key="idx">
-                <v-list-item-content>
-                  <v-text-field class="mw-16" label="Naam" :prefix="prefix" :value="g.short" @input="val => updateNaam(idx,val)" />
-                </v-list-item-content>
-                <template v-if="splitAll">
-                  &nbsp;
-                  <v-list-item-content class="maxw-8" >
-                    <v-select label="Splits in" class="mw-6" :items="splitBox" :value="g.split" @change="val => updateSplit(idx, val)" />
-                  </v-list-item-content>
-                </template>
-                <v-list-item-action>
-                  <v-icon @click.stop="remove(idx)">mdi-delete</v-icon>
-                </v-list-item-action>
-              </v-list-item>
-            </template>
-          </v-list>
-          -->
           </div>
         </v-col>
       </v-row>
@@ -102,12 +68,12 @@
       max_size: MAX_SIZE,
       error: null,      
       splitAll: false,
-      lastSplit: 2
+      lastSplit: 1
     }),
     methods: {
       next() {
         if (!this.splitAll) {
-          this.massSplit(1, false);
+          this.massSplit(1, true);
         }
         this.$emit('next');
       },
@@ -124,11 +90,12 @@
         }
         let cur = this.groups.length;
         while (cur > count) {
-          this.remove(cur-1);
+          //this.remove(cur-1);
+          this.$store.commit('decrementGroups');
           cur--;
         }
         while (cur < count) {
-          this.addGroup();
+          this.$store.commit('incrementGroups', this.lastSplit);
           cur++;
         }
         this.error = null;
@@ -150,10 +117,10 @@
       setSplitAll(val) {
         this.splitAll = val;
         if (val) {
-          this.massSplit(this.lastSplit, false);
+          this.massSplit(2, true);
         }
         else {
-          this.massSplit(1, false);
+          this.massSplit(1, true);
         }
       },
       massSplit(val, update) {
