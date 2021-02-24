@@ -1,11 +1,12 @@
 class SolverService {
-    constructor(algorithms, objective, validate, minimize=true, logging=true) {
+    constructor(algorithms, objective, validate, minimize=true, logging=true, reportGap=15000) {
         this.algorithms = algorithms;
         this.currentAlgorithm = null;
         this.logging = logging;
         this.minimize = minimize;
         this.objective = objective;
         this.validate = validate;
+        this.reportGap = reportGap;
     }
 
     progress(current, total) {
@@ -16,7 +17,8 @@ class SolverService {
         }
         else {
             postMessage({type: 'progress', payload: {state: 'running', progress: 0, progressMsg: 'Berekenen...', indeterminate: true, algorithm: this.currentAlgorithm}});
-        }    
+        }
+        this.reportLine(true);
     }
 
     finish(optimal) {
@@ -27,9 +29,23 @@ class SolverService {
         else {
             postMessage({type: 'progress', payload: {state: 'done', progress: 1, progressMsg: 'Klaar.', algorithm: this.currentAlgorithm}});
         }
+        this.reportLine(true);
+    }
+
+    bound(bound) {
+        if (this.minimize) {
+            this.lowerBound = Math.max(this.lowerBound, bound);
+        }
+        else {
+            this.upperBound = Math.min(this.upperBound, bound);
+        }
     }
 
     solution(solution) {
+        if (solution.includes(undefined)) {
+            console.log('Solution contains undefined', solution);
+            console.trace();
+        }
         const instance = this.currentInstance;
         const minimize = this.minimize;
         if (this.validate && !this.validate(solution, instance)) {
@@ -57,8 +73,8 @@ class SolverService {
         this.currentInstance = null;
         this.bestSolution = null;
         this.bestValue = null;
-        this.lowerBound = null;
-        this.upperBound = null;
+        this.lowerBound = Number.NEGATIVE_INFINITY;
+        this.upperBound = Number.POSITIVE_INFINITY;
         this.optimal = false;
     }
 
@@ -74,26 +90,74 @@ class SolverService {
         }
     }
 
+    justify(val, postfix='', decimals=6, justify=24) {
+        if (typeof val == 'number') {
+            return (val.toFixed(decimals)+postfix).padEnd(justify, ' ');
+        }
+        if (typeof val == 'undefined' || val == null) {
+            return ''.padEnd(justify, ' ');
+        }
+        return (''+val+postfix).padEnd(justify, ' ');
+    }
+
+    relativeGap() {
+        const bound = this.minimize ? this.lowerBound : this.upperBound;
+        if (bound) {
+            return Math.abs(bound - this.bestValue)/(1e-10 + Math.abs(this.bestValue));
+        }
+        return Number.POSITIVE_INFINITY;
+    }
+
+    reportHead() {
+        if (this.logging) {
+            const timeHead = this.justify('Runtime (seconds)')
+            const objHead = this.justify('Objective');
+            const lbHead = this.justify('Lower Bound');
+            const ubHead = this.justify('Upper Bound');
+            const gapHead = this.justify('Relative Gap');
+            this.log(timeHead+objHead+lbHead+ubHead+gapHead);
+        }
+    }
+
+    reportLine(enforceGap=false) {
+        if (enforceGap && this.lastReport && Date.now() - this.lastReport <= this.reportGap) {
+            return;
+        }
+        if (this.logging) {
+            const timeStr = this.justify((Date.now()-this.startTime)/1000);
+            const objStr = this.justify(this.bestValue);
+            const lbStr = this.justify(this.lowerBound);
+            const ubStr = this.justify(this.upperBound);   
+            const gap = 100 * this.relativeGap();
+            const gapStr = this.justify(100*gap, '%');
+            this.log(timeStr+objStr+lbStr+ubStr+gapStr);
+            this.lastReport = Date.now();
+        }
+    }
+
     solve(instance) {
         this.log('------ START SOLVING ------');
         this.log('Received instance for solving', instance);
         this.reset();
         this.currentInstance = instance;
         for (let algorithm of this.algorithms) {
-            const start = Date.now();
+            this.startTime = Date.now();
             if (algorithm.eligable && !algorithm.eligable(instance)) {
                 this.log(`Skipping algorithm ${algorithm.name} as it is not suitable for this instance.`);
                 continue;
             }
             this.currentAlgorithm = algorithm.name;
             this.log(`Running algorithm ${algorithm.name}`);
+            this.reportHead();
             this.progress();
             try {
                 algorithm.run(instance, this);
-                this.currentAlgorithm = null;
                 const end = Date.now();
-                const seconds = (end-start)/1000;
+                const seconds = (end-this.startTime)/1000;
+                this.reportLine();
                 this.log(`Algorithm ${algorithm.name} finished running after ${seconds} seconds`);
+                this.currentAlgorithm = null;
+                this.startTime = null;
                 if (this.optimal) {
                     this.log(`Optimal solution found. No more algorithms will be executed`)
                     this.log('------ END SOLVING ------');
@@ -111,28 +175,3 @@ class SolverService {
 }
 
 export default SolverService;
-
-/*
-addEventListener('message', event => {
-    const instance = event.data;
-    //let sol = utils.dummy_solver(data.sizes);
-    //callbacks.solution(sol);
-    progressCallback(0,1);
-    let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
-    callbacks.solution(sol);
-    console.log(sol);
-    finishCallback();
-    const cost_fn = enumerate.matrix_to_cost_fn(data.matrix);
-    sol = enumerate.minimize(data.sizes, cost_fn, callbacks);
-    console.log(sol);
-    finishCallback(true);
-
-    // Old timeout based code
-    
-    // setTimeout(() => {
-    //     let sol = solve_localsearch(data.matrix, data.sizes).bestDivision;
-    //     callbacks.solution(sol);
-    //     finishCallback();
-    // }, 1500);
-});
-*/

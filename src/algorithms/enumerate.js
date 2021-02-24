@@ -49,6 +49,7 @@ function minimize(instance, solverService, ub=Number.POSITIVE_INFINITY, cb_rate=
     const parts = [...instance.parts];
     const matrix = instance.matrix;
     const lb = compute_lb(matrix);
+    solverService.bound(lb);
     const cost_fn = matrix_to_cost_fn(matrix);
     let best = undefined;
     const n = parts.reduce((a,b) => parseInt(a)+parseInt(b), 0);

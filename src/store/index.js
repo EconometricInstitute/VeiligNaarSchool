@@ -152,7 +152,7 @@ export default new Vuex.Store({
     solutionQuality: null,
     worker: null,
     solverState: {state: 'empty', progress: 0, progressMsg: ''},
-    advanced: utils.get_url_param('advanced')
+    advanced: utils.get_url_param('advanced') ? true : false
   },
   mutations: {
     setGroups(state, payload) {
@@ -322,7 +322,10 @@ export default new Vuex.Store({
         }
       }
       commit('setWorker', worker);
-      const instance = {matrix: getters.solveMatrix, parts: getters.division, advanced: state.advanced};
+      const instance = {matrix: getters.solveMatrix,
+                        parts: getters.division,
+                        advanced: state.advanced,
+                        groups: getters.groupView};
       worker.postMessage(instance);
     },
     stop({commit}) {
@@ -358,6 +361,11 @@ export default new Vuex.Store({
       return utils.compute_groupview(state.groups);
     },
     solutionLists: (state, getters) => {
+      if (state.solution && state.solution.length != getters.groupView.length) {
+        console.log('Strange...', state.solution, getters.groupView);
+        console.log(getters);
+        return [];
+      }
       const result = [];
       if (state.solution) {
         for (let i=0; i < state.timeslots; i++) {
@@ -365,6 +373,10 @@ export default new Vuex.Store({
         }
         for (let i=0; i < state.solution.length; i++) {
           const slot = state.solution[i];
+          if (!result[slot]) {
+            console.log('Strange...', result, slot, state.solution, i);
+            continue;
+          }
           result[slot].push(getters.groupView[i]);
         }
       }

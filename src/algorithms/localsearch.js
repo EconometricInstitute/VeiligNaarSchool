@@ -119,8 +119,8 @@ function computeCosts(division, numberOfGroups, matrix)
     return costs;
 }
 
-function eligable() {
-    return true;
+function eligable(instance) {
+    return !instance.groups.some(grp => grp.split > 1);
 }
 
 export default {

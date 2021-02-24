@@ -14,6 +14,22 @@ function count_combinations(parts) {
     return result;
 }
 
+function count_equal_partitions(n, m) {
+    // n is number of items, m is number of partitions
+    if (n % m != 0) {
+        throw `The number of items ${n} should be divisible by the number of partitions ${m}`;
+    }
+    if (m == 1 || n == m) {
+        return 1;
+    }
+    const k = n / m;
+    let result = 1;
+    for (let i=0; i < n-k; i += k) {
+        result *= binomial(n-i-1, k-1);
+    }
+    return result;
+}
+
 function* combinations(n, k) {
     // Based on https://github.com/exromany/combinations-generator, but heavily modified
     const keys = Array(k).fill(-1);
@@ -104,10 +120,25 @@ function get_url_param(param) {
     return undefined;
   }
 
+function factorial(n) {
+    let result = 1;
+    for (let i=2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+function binomial(n, k) {
+    return factorial(n) / (factorial(k) * factorial(n-k));
+}
+
 export default {dummy_solver,
                 compute_lb,
                 compute_conflicts,
                 count_combinations,
+                count_equal_partitions,
                 combinations,
                 compute_groupview,
-                get_url_param};
+                get_url_param,
+                factorial,
+                binomial};

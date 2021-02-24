@@ -39,6 +39,24 @@ function validate(solution, instance) {
             return false;
         }
     }
+    // TODO: check if potential splits are not violated?
+    const originalIndices = {};
+    for (let i=0; i < solution.length; i++) {
+        const timeslot = solution[i];
+        const originalIndex = instance.groups[i].originalIndex;
+        if (originalIndices[originalIndex]) {
+            const set = originalIndices[originalIndex];
+            if (set.has(timeslot)) {
+                return false;
+            }
+            set.add(timeslot);
+        }
+        else {
+            const set = new Set();
+            set.add(solution[i]);
+            originalIndices[originalIndex] = set;
+        }
+    }
     return true;
 }
 
